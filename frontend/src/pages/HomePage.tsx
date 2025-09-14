@@ -1,289 +1,147 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Workflow, Zap, Users } from 'lucide-react'
+import { Workflow, Zap, Users, Bot, BarChart3 } from 'lucide-react'
 import Spline from '@splinetool/react-spline'
+import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
 
 const HomePage: React.FC = () => {
+  const features = [
+    {
+      icon: Workflow,
+      title: 'Visual Design',
+      description: 'Drag and drop agents to create complex workflows without writing code.',
+      color: 'var(--af-accent-primary)',
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    {
+      icon: Bot,
+      title: 'AI Agents',
+      description: 'Access a library of pre-built AI agents for common tasks and workflows.',
+      color: 'var(--af-accent-success)',
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      icon: Zap,
+      title: 'Real-time Execution',
+      description: 'Monitor workflow execution in real-time with detailed logs and metrics.',
+      color: 'var(--af-accent-warning)',
+      gradient: 'from-yellow-500 to-orange-500'
+    },
+    {
+      icon: Users,
+      title: 'Collaboration',
+      description: 'Work together with your team in real-time on the same workflow.',
+      color: 'var(--af-accent-purple)',
+      gradient: 'from-purple-500 to-pink-500'
+    }
+  ]
+
   return (
-    <div style={{ 
-      position: 'fixed',
-      top: 0,
-      left: '256px',
-      right: 0,
-      bottom: 0,
-      zIndex: 100,
-      overflow: 'visible',
-      background: 'transparent',
-      paddingLeft: '20px'
-    }}>
+    <div className="relative min-h-screen overflow-hidden">
       {/* Spline 3D Background */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: 1,
-        pointerEvents: 'none'
-      }}>
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Spline scene="https://prod.spline.design/dg5xFQKxIPDV401j/scene.splinecode" />
-            </div>
+      </div>
 
-      {/* CSS for animated gradient borders */}
-      <style>{`
-        @property --af-angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-        
-        .af-card--animated-border {
-          animation: af-rotate 3s linear infinite;
-        }
-        
-        @keyframes af-rotate {
-          to {
-            --af-angle: 360deg;
-          }
-        }
-      `}</style>
-
-      {/* Content - positioned above background */}
-      <div style={{ position: 'relative', zIndex: 2, padding: 'var(--af-space-8)', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div className="af-container">
-          <div className="af-flex af-flex-col af-items-center" style={{ height: '100%', justifyContent: 'center' }}>
-            {/* Single Get Started Button - positioned in exact middle */}
-            <div className="af-flex af-justify-center" style={{ marginBottom: 'var(--af-space-8)' }}>
-              <Link to="/workflow-editor">
-                <button className="af-btn af-btn--primary af-btn--lg">
-                  <Workflow className="af-w-5 af-h-5 af-mr-2" />
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Hero Section */}
+        <div className="flex-1 flex items-center justify-center px-6 py-20">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6">
+              AgentFlow
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Visual Multi-Agent Workflow Designer - Create, deploy, and monitor AI agent workflows without writing orchestration code.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/workflow">
+                <AgentFlowButton variant="primary" size="lg" className="text-lg px-8 py-4">
+                  <Workflow className="w-6 h-6 mr-3" />
                   Get Started
-                </button>
+                </AgentFlowButton>
               </Link>
-        </div>
+              <Link to="/templates">
+                <AgentFlowButton variant="outline" size="lg" className="text-lg px-8 py-4">
+                  <Zap className="w-6 h-6 mr-3" />
+                  Browse Templates
+                </AgentFlowButton>
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Cards Grid - positioned 90px from BOTTOM edge */}
-        <div style={{ 
-          display: 'flex',
-          gap: '10px',
-          position: 'absolute',
-          bottom: '120px',
-          left: '20px',
-          right: '20px',
-          width: 'calc(100% - 40px)'
-        }}>
-              {/* Feature Cards - Layered Gradient Border Design */}
-              <div style={{ position: 'relative', width: '100%', height: '180px' }}>
-                {/* Layer 1: Animated gradient border */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 1
-                }} />
-                
-                {/* Layer 2: Blur layer */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  filter: 'blur(15px)',
-                  opacity: 0.6,
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 2
-                }} />
-                
-                {/* Layer 3: Black card with content (2px smaller) */}
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  left: '2px',
-                  right: '2px',
-                  bottom: '2px',
-                  background: '#1a1a2e',
-                  borderRadius: '0.875rem',
-                  padding: '1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 3
-                }}>
-                  <div className="af-mb-4">
-                    <Workflow className="af-w-10 af-h-10 af-mx-auto" style={{ color: 'var(--af-color-primary)' }} />
-          </div>
-                  <h3 className="af-text-lg af-font-semibold af-mb-3" style={{ color: 'var(--af-color-text-primary)' }}>Visual Design</h3>
-                  <p className="af-text-sm" style={{ color: 'var(--af-color-text-secondary)' }}>
-              Drag and drop agents to create complex workflows without writing code.
-            </p>
-                </div>
-          </div>
-          
-              {/* Card 2: AI Agents */}
-              <div style={{ position: 'relative', width: '100%', height: '180px' }}>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 1
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  filter: 'blur(15px)',
-                  opacity: 0.6,
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 2
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  left: '2px',
-                  right: '2px',
-                  bottom: '2px',
-                  background: '#1a1a2e',
-                  borderRadius: '0.875rem',
-                  padding: '1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 3
-                }}>
-                  <div className="af-mb-4">
-                    <Users className="af-w-10 af-h-10 af-mx-auto" style={{ color: 'var(--af-color-success)' }} />
-                  </div>
-                  <h3 className="af-text-lg af-font-semibold af-mb-3" style={{ color: 'var(--af-color-text-primary)' }}>AI Agents</h3>
-                  <p className="af-text-sm" style={{ color: 'var(--af-color-text-secondary)' }}>
-              Access a library of pre-built AI agents for common tasks and workflows.
-            </p>
-                </div>
-          </div>
-          
-              {/* Card 3: Real-time Execution */}
-              <div style={{ position: 'relative', width: '100%', height: '180px' }}>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 1
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  filter: 'blur(15px)',
-                  opacity: 0.6,
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 2
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  left: '2px',
-                  right: '2px',
-                  bottom: '2px',
-                  background: '#1a1a2e',
-                  borderRadius: '0.875rem',
-                  padding: '1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 3
-                }}>
-                  <div className="af-mb-4">
-                    <Zap className="af-w-10 af-h-10 af-mx-auto" style={{ color: 'var(--af-color-warning)' }} />
-                  </div>
-                  <h3 className="af-text-lg af-font-semibold af-mb-3" style={{ color: 'var(--af-color-text-primary)' }}>Real-time Execution</h3>
-                  <p className="af-text-sm" style={{ color: 'var(--af-color-text-secondary)' }}>
-              Monitor workflow execution in real-time with detailed logs and metrics.
-            </p>
-                </div>
-          </div>
-          
-              {/* Card 4: Collaboration */}
-              <div style={{ position: 'relative', width: '100%', height: '180px' }}>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 1
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: '1rem',
-                  background: 'conic-gradient(from 0deg, #00FFFF, #8B5CF6, #FF00FF, #00FFFF)',
-                  filter: 'blur(15px)',
-                  opacity: 0.6,
-                  animation: 'gradient-rotate 3s linear infinite',
-                  zIndex: 2
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  left: '2px',
-                  right: '2px',
-                  bottom: '2px',
-                  background: '#1a1a2e',
-                  borderRadius: '0.875rem',
-                  padding: '1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 3
-                }}>
-                  <div className="af-mb-4">
-                    <Users className="af-w-10 af-h-10 af-mx-auto" style={{ color: 'var(--af-color-accent)' }} />
-                  </div>
-                  <h3 className="af-text-lg af-font-semibold af-mb-3" style={{ color: 'var(--af-color-text-primary)' }}>Collaboration</h3>
-                  <p className="af-text-sm" style={{ color: 'var(--af-color-text-secondary)' }}>
-              Work together with your team in real-time on the same workflow.
-            </p>
+        {/* Feature Cards Section */}
+        <div className="px-6 pb-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-white mb-4">
+                Powerful Features
+              </h2>
+              <p className="text-gray-400 text-lg">
+                Everything you need to build and manage AI workflows
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => {
+                const Icon = feature.icon
+                return (
+                  <AgentFlowCard
+                    key={index}
+                    variant="glass"
+                    className="af-card--gradient-border af-fade-in group hover:scale-105 transition-all duration-300"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="text-center">
+                      <div className={`w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-r ${feature.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-white mb-3">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </AgentFlowCard>
+                )
+              })}
+            </div>
           </div>
         </div>
+
+        {/* Stats Section */}
+        <div className="px-6 pb-20">
+          <div className="max-w-4xl mx-auto">
+            <AgentFlowCard variant="glass" className="af-card--gradient-border">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-8">
+                  Trusted by Developers Worldwide
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  <div>
+                    <div className="text-3xl font-bold text-blue-400 mb-2">10K+</div>
+                    <div className="text-gray-400 text-sm">Workflows Created</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-green-400 mb-2">50K+</div>
+                    <div className="text-gray-400 text-sm">Successful Executions</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-purple-400 mb-2">1K+</div>
+                    <div className="text-gray-400 text-sm">Active Users</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-yellow-400 mb-2">99.9%</div>
+                    <div className="text-gray-400 text-sm">Uptime</div>
+                  </div>
+                </div>
+              </div>
+            </AgentFlowCard>
           </div>
         </div>
+      </div>
     </div>
   )
 }

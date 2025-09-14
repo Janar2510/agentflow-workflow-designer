@@ -104,20 +104,20 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 min-h-screen" style={{ backgroundColor: 'var(--af-bg-primary)' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="text-4xl font-bold" style={{ color: 'var(--af-text-primary)' }}>
             Dashboard
           </h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-lg mt-2" style={{ color: 'var(--af-text-secondary)' }}>
             Welcome back! Here's what's happening with your workflows.
           </p>
         </div>
         <Link to="/workflow/new">
-          <AgentFlowButton variant="primary">
-            <Plus className="h-4 w-4 mr-2" />
+          <AgentFlowButton variant="primary" size="lg">
+            <Plus className="h-5 w-5 mr-2" />
             New Workflow
           </AgentFlowButton>
         </Link>
@@ -131,29 +131,25 @@ const DashboardPage: React.FC = () => {
             <AgentFlowCard
               key={index}
               variant="glass"
-              className="af-fade-in relative overflow-hidden"
+              className="af-card--gradient-border af-fade-in group hover:scale-105 transition-all duration-300"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Black Preview Card - 2px smaller than whole card */}
-              <div className="mb-4">
-                <div className="bg-black rounded-lg mx-auto flex items-center justify-center shadow-lg" style={{ width: 'calc(100% - 4px)', height: '60px', margin: '2px' }}>
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: `${stat.color}20` }}>
                   <Icon 
                     className="h-8 w-8" 
                     style={{ color: stat.color }}
                   />
                 </div>
-              </div>
-
-              <div className="text-center">
-                <p className="text-sm font-medium mb-1 text-gray-400">
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--af-text-secondary)' }}>
                   {stat.label}
                 </p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-3xl font-bold mb-2" style={{ color: 'var(--af-text-primary)' }}>
                   {stat.value}
                 </p>
-                <p className="text-xs mt-1 text-green-400">
+                <AgentFlowBadge variant="success" size="sm">
                   {stat.change}
-                </p>
+                </AgentFlowBadge>
               </div>
             </AgentFlowCard>
           )
@@ -162,10 +158,10 @@ const DashboardPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Recent Workflows */}
-        <AgentFlowCard variant="glass">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-white">Recent Workflows</h3>
-            <Link to="/dashboard" className="text-sm text-blue-400 hover:text-blue-300">
+        <AgentFlowCard variant="glass" className="af-card--gradient-border">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Recent Workflows</h3>
+            <Link to="/dashboard" className="text-sm hover:underline" style={{ color: 'var(--af-accent-primary)' }}>
               View all
             </Link>
           </div>
@@ -173,21 +169,22 @@ const DashboardPage: React.FC = () => {
             {recentWorkflows.map((workflow) => (
               <div
                 key={workflow.id}
-                className="flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                className="flex items-center justify-between p-4 rounded-lg hover:scale-105 transition-all duration-200 group"
+                style={{ backgroundColor: 'var(--af-bg-tertiary)' }}
               >
                 <div className="flex items-center gap-3">
                   {getStatusIcon(workflow.status)}
                   <div>
-                    <h4 className="font-medium text-white">
+                    <h4 className="font-medium" style={{ color: 'var(--af-text-primary)' }}>
                       {workflow.name}
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm" style={{ color: 'var(--af-text-secondary)' }}>
                       {workflow.executions} executions • {workflow.successRate}% success
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-400">{workflow.lastRun}</p>
+                  <p className="text-xs" style={{ color: 'var(--af-text-muted)' }}>{workflow.lastRun}</p>
                 </div>
               </div>
             ))}
@@ -195,10 +192,10 @@ const DashboardPage: React.FC = () => {
         </AgentFlowCard>
 
         {/* Recent Executions */}
-        <AgentFlowCard variant="glass">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-white">Recent Executions</h3>
-            <Link to="/executions" className="text-sm text-blue-400 hover:text-blue-300">
+        <AgentFlowCard variant="glass" className="af-card--gradient-border">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Recent Executions</h3>
+            <Link to="/executions" className="text-sm hover:underline" style={{ color: 'var(--af-accent-primary)' }}>
               View all
             </Link>
           </div>
@@ -206,21 +203,22 @@ const DashboardPage: React.FC = () => {
             {recentExecutions.map((execution) => (
               <div
                 key={execution.id}
-                className="flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                className="flex items-center justify-between p-4 rounded-lg hover:scale-105 transition-all duration-200 group"
+                style={{ backgroundColor: 'var(--af-bg-tertiary)' }}
               >
                 <div className="flex items-center gap-3">
                   {getStatusIcon(execution.status)}
                   <div>
-                    <h4 className="font-medium text-white">
+                    <h4 className="font-medium" style={{ color: 'var(--af-text-primary)' }}>
                       {execution.workflow}
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm" style={{ color: 'var(--af-text-secondary)' }}>
                       Duration: {execution.duration}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-400">{execution.timestamp}</p>
+                  <p className="text-xs" style={{ color: 'var(--af-text-muted)' }}>{execution.timestamp}</p>
                 </div>
               </div>
             ))}
@@ -229,69 +227,69 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <AgentFlowCard variant="glass">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-white">Quick Actions</h3>
-          <AgentFlowBadge variant="primary">6 Actions</AgentFlowBadge>
+      <AgentFlowCard variant="glass" className="af-card--gradient-border">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Quick Actions</h3>
+          <AgentFlowBadge variant="primary" size="lg">6 Actions</AgentFlowBadge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           <Link to="/workflow/new" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-blue-500/30">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-500/30 transition-colors">
-                <Plus className="h-6 w-6 text-blue-400" />
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-primary)20' }}>
+                <Plus className="h-7 w-7" style={{ color: 'var(--af-accent-primary)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Create Workflow</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">Start from scratch</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Create Workflow</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Start from scratch</p>
             </AgentFlowCard>
           </Link>
           
           <Link to="/templates" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-green-500/30">
-              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-green-500/30 transition-colors">
-                <Zap className="h-6 w-6 text-green-400" />
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-success)20' }}>
+                <Zap className="h-7 w-7" style={{ color: 'var(--af-accent-success)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Use Template</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">Browse templates</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Use Template</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Browse templates</p>
             </AgentFlowCard>
           </Link>
           
-          <Link to="/marketplace" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-purple-500/30">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-500/30 transition-colors">
-                <Users className="h-6 w-6 text-purple-400" />
+          <Link to="/agents" className="group">
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-purple)20' }}>
+                <Users className="h-7 w-7" style={{ color: 'var(--af-accent-purple)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Browse Agents</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">Find new agents</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Browse Agents</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Find new agents</p>
             </AgentFlowCard>
           </Link>
 
           <Link to="/workflow" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-orange-500/30">
-              <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-orange-500/30 transition-colors">
-                <Play className="h-6 w-6 text-orange-400" />
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-warning)20' }}>
+                <Play className="h-7 w-7" style={{ color: 'var(--af-accent-warning)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Run Workflow</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">Execute workflows</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Run Workflow</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Execute workflows</p>
             </AgentFlowCard>
           </Link>
 
           <Link to="/analytics" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-cyan-500/30">
-              <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-cyan-500/30 transition-colors">
-                <BarChart3 className="h-6 w-6 text-cyan-400" />
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-primary)20' }}>
+                <BarChart3 className="h-7 w-7" style={{ color: 'var(--af-accent-primary)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Analytics</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">View insights</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Analytics</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>View insights</p>
             </AgentFlowCard>
           </Link>
 
           <Link to="/settings" className="group">
-            <AgentFlowCard variant="glass" className="h-32 flex flex-col items-center justify-center hover:scale-105 transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-gray-500/30">
-              <div className="w-12 h-12 bg-gray-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-gray-500/30 transition-colors">
-                <Settings className="h-6 w-6 text-gray-400" />
+            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-text-muted)20' }}>
+                <Settings className="h-7 w-7" style={{ color: 'var(--af-text-muted)' }} />
               </div>
-              <h3 className="font-medium text-white text-sm text-center">Settings</h3>
-              <p className="text-xs text-gray-400 text-center mt-1">Configure app</p>
+              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Settings</h3>
+              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Configure app</p>
             </AgentFlowCard>
           </Link>
         </div>
