@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agentflow
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - pvc.yaml
+  - postgres.yaml
+  - redis.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+  - monitoring.yaml
+
+commonLabels:
+  app.kubernetes.io/name: agentflow
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/component: backend
+
+images:
+  - name: agentflow/backend
+    newTag: latest
+  - name: agentflow/frontend
+    newTag: latest
+
+
+
+
+
+
+
+

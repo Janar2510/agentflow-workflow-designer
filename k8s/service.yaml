@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentflow-backend-service
+  namespace: agentflow
+  labels:
+    app: agentflow-backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: api
+  - port: 8001
+    targetPort: 8001
+    protocol: TCP
+    name: metrics
+  selector:
+    app: agentflow-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentflow-frontend-service
+  namespace: agentflow
+  labels:
+    app: agentflow-frontend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: agentflow-frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentflow-postgres
+  namespace: agentflow
+  labels:
+    app: agentflow-postgres
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: agentflow-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentflow-redis
+  namespace: agentflow
+  labels:
+    app: agentflow-redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: agentflow-redis
+
+
+
+
+
+
+
+

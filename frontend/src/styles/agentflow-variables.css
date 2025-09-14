@@ -1,0 +1,94 @@
+/* AgentFlow Design System Variables */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Background Colors */
+  --af-bg-primary: #0f0f1c;
+  --af-bg-secondary: #1a1a2e;
+  --af-bg-tertiary: #16213e;
+  --af-bg-glass: rgba(26, 26, 46, 0.8);
+  --af-bg-glass-light: rgba(26, 26, 46, 0.6);
+  --af-bg-glass-strong: rgba(26, 26, 46, 0.9);
+  
+  /* Gradient Colors */
+  --af-gradient-primary: #6366f1;
+  --af-gradient-secondary: #3b82f6;
+  --af-gradient-accent: #8b5cf6;
+  
+  /* UI Element Colors */
+  --af-accent-primary: #007AFF;
+  --af-accent-success: #00FF87;
+  --af-accent-warning: #FFB800;
+  --af-accent-danger: #FF3B30;
+  --af-accent-purple: #8B5CF6;
+  
+  /* Text Colors */
+  --af-text-primary: #ffffff;
+  --af-text-secondary: #a0a9c0;
+  --af-text-muted: #6b7280;
+  --af-text-inverse: #0f0f1c;
+  
+  /* Border Colors */
+  --af-border-primary: #374151;
+  --af-border-accent: #4f46e5;
+  --af-border-glass: rgba(255, 255, 255, 0.1);
+  
+  /* Typography */
+  --af-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --af-font-light: 300;
+  --af-font-normal: 400;
+  --af-font-medium: 500;
+  --af-font-semibold: 600;
+  --af-font-bold: 700;
+  
+  /* Font Sizes */
+  --af-text-xs: 0.75rem;
+  --af-text-sm: 0.875rem;
+  --af-text-base: 1rem;
+  --af-text-lg: 1.125rem;
+  --af-text-xl: 1.25rem;
+  --af-text-2xl: 1.5rem;
+  --af-text-3xl: 1.875rem;
+  --af-text-4xl: 2.25rem;
+  
+  /* Spacing */
+  --af-space-1: 0.25rem;
+  --af-space-2: 0.5rem;
+  --af-space-3: 0.75rem;
+  --af-space-4: 1rem;
+  --af-space-5: 1.25rem;
+  --af-space-6: 1.5rem;
+  --af-space-8: 2rem;
+  --af-space-10: 2.5rem;
+  --af-space-12: 3rem;
+  --af-space-16: 4rem;
+  --af-space-20: 5rem;
+  
+  /* Border Radius */
+  --af-radius-sm: 0.25rem;
+  --af-radius-md: 0.5rem;
+  --af-radius-lg: 0.75rem;
+  --af-radius-xl: 1rem;
+  --af-radius-2xl: 1.25rem;
+  --af-radius-full: 9999px;
+  
+  /* Shadows */
+  --af-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --af-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --af-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --af-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --af-shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  
+  /* Transitions */
+  --af-transition-fast: 0.15s ease;
+  --af-transition-normal: 0.2s ease;
+  --af-transition-slow: 0.3s ease;
+}
+
+/* CSS Custom Property for Gradient Animation */
+@property --af-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+

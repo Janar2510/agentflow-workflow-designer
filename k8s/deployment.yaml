@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentflow-backend
+  namespace: agentflow
+  labels:
+    app: agentflow-backend
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: agentflow-backend
+  template:
+    metadata:
+      labels:
+        app: agentflow-backend
+        version: v1
+    spec:
+      containers:
+      - name: agentflow-backend
+        image: agentflow/backend:latest
+        ports:
+        - containerPort: 8000
+          name: api
+        - containerPort: 8001
+          name: metrics
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: agentflow-config
+              key: DATABASE_URL
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: agentflow-config
+              key: REDIS_URL
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: agentflow-secrets
+              key: jwt-secret
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: agentflow-storage
+          mountPath: /app/storage
+      volumes:
+      - name: agentflow-storage
+        persistentVolumeClaim:
+          claimName: agentflow-storage-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentflow-frontend
+  namespace: agentflow
+  labels:
+    app: agentflow-frontend
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: agentflow-frontend
+  template:
+    metadata:
+      labels:
+        app: agentflow-frontend
+        version: v1
+    spec:
+      containers:
+      - name: agentflow-frontend
+        image: agentflow/frontend:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+
+
+
+
+
+
+
