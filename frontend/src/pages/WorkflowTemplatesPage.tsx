@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Search, Star, Download, Eye } from 'lucide-react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 
 export const WorkflowTemplatesPage: React.FC = () => {
+  const design = useCoronaDesign()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState('')
@@ -101,44 +103,123 @@ export const WorkflowTemplatesPage: React.FC = () => {
     }
   }
 
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: design.colors.bgPrimary,
+    padding: design.spacing.lg,
+    fontFamily: design.typography.fontFamily,
+  }
+
+  const headerStyles: React.CSSProperties = {
+    marginBottom: design.spacing.xl,
+  }
+
+  const titleStyles: React.CSSProperties = {
+    ...design.text('heading'),
+    fontSize: design.typography.sizes['2xl'],
+    marginBottom: design.spacing.sm,
+  }
+
+  const subtitleStyles: React.CSSProperties = {
+    ...design.text('body'),
+    color: design.colors.textSecondary,
+  }
+
   return (
-    <div className="p-6">
+    <div style={pageStyles}>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+      <div style={headerStyles}>
+        <h1 style={titleStyles}>
           Workflow Templates
         </h1>
-        <p className="text-gray-400">
+        <p style={subtitleStyles}>
           Get started quickly with pre-built workflow templates.
         </p>
       </div>
 
       {/* Search and Filters */}
-      <AgentFlowCard variant="glass" className="mb-8">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <CoronaCard variant="elevated" style={{ marginBottom: design.spacing.xl }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: design.spacing.md,
+        }}>
           {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search style={{
+              position: 'absolute',
+              left: design.spacing.sm,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: design.colors.textMuted,
+              width: '16px',
+              height: '16px',
+            }} />
             <input
               type="text"
               placeholder="Search templates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                width: '100%',
+                paddingLeft: design.spacing.xl,
+                paddingRight: design.spacing.sm,
+                paddingTop: design.spacing.sm,
+                paddingBottom: design.spacing.sm,
+                backgroundColor: design.colors.bgSecondary,
+                border: `1px solid ${design.colors.borderPrimary}`,
+                borderRadius: '0.375rem',
+                color: design.colors.textPrimary,
+                fontFamily: design.typography.fontFamily,
+                fontSize: design.typography.sizes.base,
+                outline: 'none',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = design.colors.primary
+                e.target.style.boxShadow = `0 0 0 2px ${design.colors.primary}20`
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = design.colors.borderPrimary
+                e.target.style.boxShadow = 'none'
+              }}
             />
           </div>
 
           {/* Category Filters */}
-          <div className="flex flex-wrap gap-2">
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: design.spacing.sm,
+          }}>
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category === 'All' ? '' : category)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  selectedCategory === category || (category === 'All' && !selectedCategory)
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                style={{
+                  padding: `${design.spacing.xs} ${design.spacing.sm}`,
+                  borderRadius: '0.375rem',
+                  fontSize: design.typography.sizes.sm,
+                  fontWeight: design.typography.weights.medium,
+                  transition: 'all 0.15s ease-in-out',
+                  border: 'none',
+                  cursor: 'pointer',
+                  backgroundColor: selectedCategory === category || (category === 'All' && !selectedCategory)
+                    ? design.colors.primary
+                    : design.colors.bgSecondary,
+                  color: selectedCategory === category || (category === 'All' && !selectedCategory)
+                    ? design.colors.white
+                    : design.colors.textSecondary,
+                }}
+                onMouseEnter={(e) => {
+                  if (!(selectedCategory === category || (category === 'All' && !selectedCategory))) {
+                    e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!(selectedCategory === category || (category === 'All' && !selectedCategory))) {
+                    e.currentTarget.style.backgroundColor = design.colors.bgSecondary
+                  }
+                }}
               >
                 {category}
               </button>
@@ -173,7 +254,7 @@ export const WorkflowTemplatesPage: React.FC = () => {
             </select>
           </div>
         </div>
-      </AgentFlowCard>
+      </CoronaCard>
 
       {/* Featured Templates */}
       <div className="mb-8">
@@ -184,7 +265,7 @@ export const WorkflowTemplatesPage: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredTemplates.map((template) => (
-            <AgentFlowCard key={template.id} variant="glass" className="group hover:scale-105 transition-transform relative overflow-hidden">
+            <CoronaCard key={template.id} variant="elevated" className="group hover:scale-105 transition-transform relative overflow-hidden">
               {/* Black Preview Card - 2px smaller than whole card */}
               <div className="mb-4">
                 <div className="bg-black rounded-lg mx-auto flex items-center justify-center shadow-lg" style={{ width: 'calc(100% - 4px)', height: '80px', margin: '2px' }}>
@@ -209,18 +290,18 @@ export const WorkflowTemplatesPage: React.FC = () => {
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <AgentFlowBadge variant={getDifficultyColor(template.difficulty)}>
+                  <CoronaBadge variant={getDifficultyColor(template.difficulty)}>
                     {template.difficulty.toUpperCase()}
-                  </AgentFlowBadge>
-                  <AgentFlowBadge variant="primary">
+                  </CoronaBadge>
+                  <CoronaBadge variant="primary">
                     {template.category}
-                  </AgentFlowBadge>
+                  </CoronaBadge>
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
-                  <AgentFlowButton variant="primary" className="flex-1">
+                  <CoronaButton variant="primary" className="flex-1">
                     Use Template
-                  </AgentFlowButton>
+                  </CoronaButton>
                   <div className="flex items-center gap-4 text-sm text-gray-400">
                     <div className="flex items-center gap-1">
                       <Download className="h-4 w-4" />
@@ -233,7 +314,7 @@ export const WorkflowTemplatesPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
           ))}
         </div>
       </div>
@@ -244,7 +325,7 @@ export const WorkflowTemplatesPage: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {otherTemplates.map((template) => (
-            <AgentFlowCard key={template.id} variant="glass" className="group hover:scale-105 transition-transform relative overflow-hidden">
+            <CoronaCard key={template.id} variant="elevated" className="group hover:scale-105 transition-transform relative overflow-hidden">
               {/* Black Preview Card - 2px smaller than whole card */}
               <div className="mb-4">
                 <div className="bg-black rounded-lg mx-auto flex items-center justify-center shadow-lg" style={{ width: 'calc(100% - 4px)', height: '80px', margin: '2px' }}>
@@ -269,18 +350,18 @@ export const WorkflowTemplatesPage: React.FC = () => {
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <AgentFlowBadge variant={getDifficultyColor(template.difficulty)}>
+                  <CoronaBadge variant={getDifficultyColor(template.difficulty)}>
                     {template.difficulty.toUpperCase()}
-                  </AgentFlowBadge>
-                  <AgentFlowBadge variant="primary">
+                  </CoronaBadge>
+                  <CoronaBadge variant="primary">
                     {template.category}
-                  </AgentFlowBadge>
+                  </CoronaBadge>
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
-                  <AgentFlowButton variant="primary" className="flex-1">
+                  <CoronaButton variant="primary" className="flex-1">
                     Use Template
-                  </AgentFlowButton>
+                  </CoronaButton>
                   <div className="flex items-center gap-4 text-sm text-gray-400">
                     <div className="flex items-center gap-1">
                       <Download className="h-4 w-4" />
@@ -293,7 +374,7 @@ export const WorkflowTemplatesPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
           ))}
         </div>
       </div>

@@ -1,134 +1,146 @@
 import React, { memo } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { GitBranch, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
-import { cn } from '../../lib/utils'
+import { GitBranch, Settings, X, Plus } from 'lucide-react'
+import { useCoronaDesign } from '../../hooks/useCoronaDesign'
+import { AnimatedBorder } from './AnimatedBorder'
+import { ConnectionPoints } from './ConnectionPoints'
+import { NodeHeader } from './NodeHeader'
+import { getNodeCategory } from './NodeStyles'
+import './TriggerNode.css'
 
 interface ConditionNodeData {
   condition: string
   config: Record<string, any>
   label: string
   status?: 'idle' | 'running' | 'completed' | 'error'
-  result?: boolean
   lastExecution?: {
     duration: number
     timestamp: string
     error?: string
   }
+  onDelete?: () => void
+  onAdd?: () => void
+  onSettings?: () => void
 }
 
-export const ConditionNode = memo<NodeProps<ConditionNodeData>>(({ data, selected }) => {
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'running': 
-        return 'border-yellow-500 bg-yellow-500/10'
-      case 'completed': 
-        return data.result ? 'border-green-500 bg-green-500/10' : 'border-blue-500 bg-blue-500/10'
-      case 'error': 
-        return 'border-red-500 bg-red-500/10'
-      default: 
-        return 'border-purple-500 bg-purple-500/10'
-    }
-  }
-
-  const getStatusIcon = (status?: string) => {
-    switch (status) {
-      case 'running': 
-        return <AlertCircle className="w-4 h-4 text-yellow-500" />
-      case 'completed': 
-        return data.result ? 
-          <CheckCircle className="w-4 h-4 text-green-500" /> : 
-          <XCircle className="w-4 h-4 text-blue-500" />
-      case 'error': 
-        return <AlertCircle className="w-4 h-4 text-red-500" />
-      default: 
-        return <GitBranch className="w-4 h-4 text-purple-500" />
-    }
-  }
+export const ConditionNode = memo<NodeProps<ConditionNodeData>>(({ data, selected, isConnectable }) => {
+  const design = useCoronaDesign()
+  const category = getNodeCategory('conditionNode', data)
 
   const getStatusText = (status?: string) => {
     switch (status) {
       case 'running': return 'Evaluating'
-      case 'completed': return data.result ? 'True' : 'False'
-      case 'error': return 'Error'
+      case 'completed': return 'Evaluated'
+      case 'error': return 'Failed'
       default: return 'Ready'
     }
   }
 
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case 'running': 
+        return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' }
+      case 'completed': 
+        return { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' }
+      case 'error': 
+        return { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' }
+      default: 
+        return { color: '#40ffaa', bg: 'rgba(64, 255, 170, 0.1)' }
+    }
+  }
+
+  const statusColors = getStatusColor(data.status)
+
   return (
-    <div className={cn(
-      'agentflow-card min-w-[200px] max-w-[300px] transition-all duration-200',
-      selected ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-bg-primary' : '',
-      getStatusColor(data.status)
-    )}>
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-3 h-3 border-2 border-gray-300 bg-white hover:border-purple-500 transition-colors"
-      />
+    <div style={{ position: 'relative' }}>
+      {/* Node Name - Outside the node */}
+      <div style={{
+        position: 'absolute',
+        top: '-25px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        fontSize: '12px',
+        fontWeight: 600,
+        color: '#ffffff',
+        whiteSpace: 'nowrap',
+        zIndex: 20,
+        background: 'rgba(0, 0, 0, 0.8)',
+        padding: '2px 8px',
+        borderRadius: '4px',
+      }}>
+        {data.label}
+      </div>
       
-      <div className="space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {getStatusIcon(data.status)}
-            <span className="font-medium text-gray-900 text-sm">
-              {data.label}
-            </span>
-          </div>
+      <AnimatedBorder 
+        category={category} 
+        isActive={selected}
+        status={data.status === 'running' ? 'executing' : data.status === 'completed' ? 'data-flow' : 'idle'}
+        style={{
+          width: '80px',
+          height: '80px',
+          fontFamily: design.typography.fontFamily,
+        }}
+      >
+        {/* Node Icon - Centered */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+          background: 'rgba(64, 255, 170, 0.1)',
+          borderRadius: '8px',
+        }}>
+          <GitBranch className="w-6 h-6" />
         </div>
         
-        {/* Condition */}
-        <div className="text-xs text-gray-600 bg-bg-tertiary px-2 py-1 rounded font-mono">
-          {data.condition || 'No condition set'}
-        </div>
-        
-        {/* Status */}
-        <div className="flex items-center justify-between">
-          <span className={cn(
-            'text-xs font-medium',
-            data.status === 'running' && 'text-yellow-500',
-            data.status === 'completed' && (data.result ? 'text-green-500' : 'text-blue-500'),
-            data.status === 'error' && 'text-red-500',
-            !data.status && 'text-gray-500'
-          )}>
-            {getStatusText(data.status)}
-          </span>
-          
-          {data.lastExecution && (
-            <div className="text-xs text-gray-500">
-              {data.lastExecution.duration}ms
-            </div>
+        {/* Control Buttons - Overlay */}
+        <div style={{
+          position: 'absolute',
+          top: '4px',
+          right: '4px',
+          display: 'flex',
+          gap: '2px',
+          zIndex: 10,
+        }}>
+          {data.onAdd && (
+            <button 
+              onClick={data.onAdd}
+              style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '2px',
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#9ca3af',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '8px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(64, 121, 255, 0.8)'
+                e.currentTarget.style.color = 'white'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.6)'
+                e.currentTarget.style.color = '#9ca3af'
+              }}
+            >
+              +
+            </button>
           )}
         </div>
         
-        {/* Error Message */}
-        {data.status === 'error' && data.lastExecution?.error && (
-          <div className="text-xs text-red-500 bg-red-500/10 p-2 rounded">
-            {data.lastExecution.error}
-          </div>
-        )}
-      </div>
-      
-      {/* True Output */}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="true"
-        className="w-3 h-3 border-2 border-green-500 bg-white hover:border-green-600 transition-colors"
-        style={{ left: '25%' }}
-      />
-      
-      {/* False Output */}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="false"
-        className="w-3 h-3 border-2 border-blue-500 bg-white hover:border-blue-600 transition-colors"
-        style={{ left: '75%' }}
-      />
+        <ConnectionPoints 
+          category={category}
+          nodeId={data.label}
+          isConnectable={isConnectable}
+        />
+      </AnimatedBorder>
     </div>
   )
 })
 
 ConditionNode.displayName = 'ConditionNode'
-

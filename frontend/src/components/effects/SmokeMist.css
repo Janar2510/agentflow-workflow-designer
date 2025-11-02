@@ -1,0 +1,123 @@
+.smoke-mist-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.smoke-mist-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.smoke-mist-layer-1 {
+  background: 
+    radial-gradient(
+      ellipse 800px 1200px at 60% 40%,
+      rgba(139, 233, 253, 0.25) 0%,
+      rgba(255, 121, 198, 0.15) 30%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 600px 900px at 40% 60%,
+      rgba(139, 233, 253, 0.2) 0%,
+      transparent 50%
+    );
+  animation: mistDrift 45s ease-in-out infinite;
+}
+
+.smoke-mist-layer-2 {
+  background: 
+    radial-gradient(
+      ellipse 700px 1000px at 50% 50%,
+      rgba(139, 233, 253, 0.15) 0%,
+      rgba(255, 121, 198, 0.1) 25%,
+      transparent 55%
+    );
+  animation: mistDrift 55s ease-in-out infinite reverse;
+  opacity: 0.8;
+}
+
+@keyframes mistDrift {
+  0% {
+    transform: translateX(-8%) translateY(-5%) rotate(-1deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translateX(2%) translateY(-3%) rotate(0.5deg);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(6%) translateY(1%) rotate(1deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateX(1%) translateY(3%) rotate(-0.5deg);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(-8%) translateY(-5%) rotate(-1deg);
+    opacity: 0.7;
+  }
+}
+
+.smoke-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(139, 233, 253, 0.4) 0%,
+    rgba(255, 121, 198, 0.2) 40%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  animation: smokeFloat infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes smokeFloat {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.8) rotate(0deg);
+    opacity: 0.3;
+  }
+  15% {
+    transform: translateY(-15px) translateX(20px) scale(0.9) rotate(1deg);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-30px) translateX(35px) scale(0.95) rotate(2deg);
+    opacity: 0.4;
+  }
+  45% {
+    transform: translateY(-45px) translateX(45px) scale(1) rotate(2.5deg);
+    opacity: 0.42;
+  }
+  60% {
+    transform: translateY(-60px) translateX(30px) scale(1.05) rotate(1.5deg);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-75px) translateX(40px) scale(1.02) rotate(0.5deg);
+    opacity: 0.35;
+  }
+  90% {
+    transform: translateY(-90px) translateX(50px) scale(0.98) rotate(-1deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-120px) translateX(60px) scale(0.9) rotate(-2deg);
+    opacity: 0.2;
+  }
+}
+

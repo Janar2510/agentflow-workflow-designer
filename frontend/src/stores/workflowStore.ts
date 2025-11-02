@@ -236,6 +236,46 @@ export const useWorkflowStore = create<WorkflowState>()(
 
         // Workflow CRUD operations
         createWorkflow: (name, description) => {
+          // Create sample nodes for the default workflow
+          const sampleNodes: WorkflowNode[] = [
+            {
+              id: 'trigger-1',
+              type: 'trigger',
+              position: { x: 100, y: 100 },
+              data: {
+                agentType: 'manual_trigger',
+                serviceType: 'default',
+                config: {},
+                label: 'Text Generator',
+                status: 'idle'
+              }
+            },
+            {
+              id: 'agent-1',
+              type: 'agent',
+              position: { x: 400, y: 100 },
+              data: {
+                agentType: 'llm_chat',
+                serviceType: 'slack',
+                config: {},
+                label: 'Chat Agent',
+                status: 'idle'
+              }
+            },
+            {
+              id: 'action-1',
+              type: 'action',
+              position: { x: 700, y: 100 },
+              data: {
+                agentType: 'email_sender',
+                serviceType: 'gmail',
+                config: {},
+                label: 'Email Sender',
+                status: 'idle'
+              }
+            }
+          ]
+
           const newWorkflow: Workflow = {
             id: `workflow_${Date.now()}`,
             user_id: 'current_user', // TODO: Get from auth store
@@ -246,7 +286,7 @@ export const useWorkflowStore = create<WorkflowState>()(
             is_public: false,
             tags: [],
             workflow_data: {
-              nodes: [],
+              nodes: sampleNodes,
               edges: [],
               viewport: { x: 0, y: 0, zoom: 1 }
             },

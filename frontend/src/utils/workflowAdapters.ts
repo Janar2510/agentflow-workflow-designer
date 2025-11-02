@@ -3,12 +3,25 @@ import { WorkflowNode, WorkflowEdge, WorkflowData } from '../types'
 
 // Convert ReactFlow Node to WorkflowNode
 export const nodeToWorkflowNode = (node: Node): WorkflowNode => {
+  // Clean the node type by removing 'Node' suffix if it exists
+  let cleanType = node.type
+  if (cleanType.endsWith('Node')) {
+    cleanType = cleanType.replace(/Node$/, '')
+  }
+  
+  console.log('Converting Node to WorkflowNode:', {
+    originalType: node.type,
+    cleanedType: cleanType,
+    nodeId: node.id
+  })
+  
   return {
     id: node.id,
-    type: node.type as 'agent' | 'condition' | 'trigger' | 'action',
+    type: cleanType as 'agent' | 'condition' | 'trigger' | 'action',
     position: node.position,
     data: {
       agentType: node.data.agentType,
+      serviceType: node.data.serviceType,
       config: node.data.config || {},
       label: node.data.label || node.id,
       status: node.data.status,
@@ -19,12 +32,29 @@ export const nodeToWorkflowNode = (node: Node): WorkflowNode => {
 
 // Convert WorkflowNode to ReactFlow Node
 export const workflowNodeToNode = (workflowNode: WorkflowNode): Node => {
+  // Ensure we don't have corrupted node types
+  let nodeType = workflowNode.type
+  if (nodeType.includes('Node')) {
+    // If it already contains 'Node', just use it as is
+    nodeType = nodeType
+  } else {
+    // Add 'Node' suffix only if it doesn't exist
+    nodeType = `${nodeType}Node`
+  }
+  
+  console.log('Converting WorkflowNode to Node:', {
+    originalType: workflowNode.type,
+    convertedType: nodeType,
+    nodeId: workflowNode.id
+  })
+  
   return {
     id: workflowNode.id,
-    type: `${workflowNode.type}Node` as any, // agent -> agentNode, condition -> conditionNode, etc.
+    type: nodeType as any,
     position: workflowNode.position,
     data: {
       agentType: workflowNode.data.agentType,
+      serviceType: workflowNode.data.serviceType,
       config: workflowNode.data.config,
       label: workflowNode.data.label,
       status: workflowNode.data.status,
@@ -92,6 +122,7 @@ export const createWorkflowNode = (
     position,
     data: {
       agentType: data.agentType,
+      serviceType: data.serviceType,
       config: data.config || {},
       label: data.label || id,
       status: data.status || 'idle',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MessageCircle, Trophy, Bell, Users, TrendingUp, Star, Eye, Heart, Reply } from 'lucide-react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 
 interface ForumPost {
   id: string
@@ -41,6 +42,7 @@ interface LeaderboardUser {
 }
 
 export const CommunityPage: React.FC = () => {
+  const design = useCoronaDesign()
   const [activeTab, setActiveTab] = useState<'discussions' | 'leaderboard' | 'events'>('discussions')
   const [posts, setPosts] = useState<ForumPost[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([])
@@ -211,28 +213,103 @@ export const CommunityPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse">
-            <div className="h-8 bg-slate-200 rounded w-64 mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-4">
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: design.colors.bgPrimary,
+        padding: design.spacing.xl,
+        fontFamily: design.typography.fontFamily,
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+            <div style={{
+              height: '2rem',
+              backgroundColor: design.colors.bgTertiary,
+              borderRadius: design.spacing.sm,
+              width: '16rem',
+              marginBottom: design.spacing.lg
+            }}></div>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', 
+              gap: design.spacing.lg,
+              '@media (min-width: 1024px)': { gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }
+            }}>
+              <div style={{ 
+                gridColumn: 'span 2',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: design.spacing.md
+              }}>
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-white rounded-lg p-6">
-                    <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-slate-200 rounded w-1/2 mb-4"></div>
-                    <div className="h-3 bg-slate-200 rounded w-full"></div>
+                  <div key={i} style={{
+                    backgroundColor: design.colors.cardBg,
+                    borderRadius: design.spacing.sm,
+                    padding: design.spacing.lg,
+                    border: `1px solid ${design.colors.borderPrimary}`
+                  }}>
+                    <div style={{
+                      height: '1rem',
+                      backgroundColor: design.colors.bgTertiary,
+                      borderRadius: design.spacing.xs,
+                      width: '75%',
+                      marginBottom: design.spacing.sm
+                    }}></div>
+                    <div style={{
+                      height: '0.75rem',
+                      backgroundColor: design.colors.bgTertiary,
+                      borderRadius: design.spacing.xs,
+                      width: '50%',
+                      marginBottom: design.spacing.md
+                    }}></div>
+                    <div style={{
+                      height: '0.75rem',
+                      backgroundColor: design.colors.bgTertiary,
+                      borderRadius: design.spacing.xs,
+                      width: '100%'
+                    }}></div>
                   </div>
                 ))}
               </div>
-              <div className="bg-white rounded-lg p-6">
-                <div className="h-6 bg-slate-200 rounded w-32 mb-4"></div>
+              <div style={{
+                backgroundColor: design.colors.cardBg,
+                borderRadius: design.spacing.sm,
+                padding: design.spacing.lg,
+                border: `1px solid ${design.colors.borderPrimary}`
+              }}>
+                <div style={{
+                  height: '1.5rem',
+                  backgroundColor: design.colors.bgTertiary,
+                  borderRadius: design.spacing.sm,
+                  width: '8rem',
+                  marginBottom: design.spacing.md
+                }}></div>
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center space-x-3 mb-3">
-                    <div className="w-8 h-8 bg-slate-200 rounded-full"></div>
-                    <div className="flex-1">
-                      <div className="h-3 bg-slate-200 rounded w-24 mb-1"></div>
-                      <div className="h-2 bg-slate-200 rounded w-16"></div>
+                  <div key={i} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: design.spacing.sm,
+                    marginBottom: design.spacing.sm
+                  }}>
+                    <div style={{
+                      width: '2rem',
+                      height: '2rem',
+                      backgroundColor: design.colors.bgTertiary,
+                      borderRadius: '50%'
+                    }}></div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        height: '0.75rem',
+                        backgroundColor: design.colors.bgTertiary,
+                        borderRadius: design.spacing.xs,
+                        width: '6rem',
+                        marginBottom: design.spacing.xs
+                      }}></div>
+                      <div style={{
+                        height: '0.5rem',
+                        backgroundColor: design.colors.bgTertiary,
+                        borderRadius: design.spacing.xs,
+                        width: '4rem'
+                      }}></div>
                     </div>
                   </div>
                 ))}
@@ -244,130 +321,299 @@ export const CommunityPage: React.FC = () => {
     )
   }
 
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: design.colors.bgPrimary,
+    padding: design.spacing.xl,
+    fontFamily: design.typography.fontFamily,
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
-      <div className="max-w-7xl mx-auto">
+    <div style={pageStyles}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <div style={{ marginBottom: design.spacing.lg }}>
+          <h1 style={{
+            ...design.text('heading'),
+            fontSize: design.typography.sizes['4xl'],
+            fontWeight: design.typography.weights.bold,
+            background: `linear-gradient(135deg, ${design.colors.primary}, ${design.colors.secondary})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            marginBottom: design.spacing.md,
+            color: design.colors.textPrimary
+          }}>
             Community Hub
           </h1>
-          <p className="text-slate-600 text-lg">
+          <p style={{
+            ...design.text('body'),
+            color: design.colors.textSecondary,
+            fontSize: design.typography.sizes.lg
+          }}>
             Connect, learn, and share with the AgentFlow community
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 mb-8 bg-white rounded-lg p-1 shadow-sm">
+        <div style={{
+          display: 'flex',
+          gap: design.spacing.xs,
+          marginBottom: design.spacing.lg,
+          backgroundColor: design.colors.cardBg,
+          borderRadius: design.spacing.sm,
+          padding: design.spacing.xs,
+          border: `1px solid ${design.colors.borderPrimary}`,
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+        }}>
           <button
             onClick={() => setActiveTab('discussions')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${
-              activeTab === 'discussions'
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            style={{
+              flex: 1,
+              padding: `${design.spacing.md} ${design.spacing.lg}`,
+              borderRadius: design.spacing.sm,
+              fontFamily: design.typography.fontFamily,
+              fontWeight: design.typography.weights.medium,
+              transition: 'all 0.2s ease-in-out',
+              backgroundColor: activeTab === 'discussions' ? design.colors.primary + '20' : 'transparent',
+              color: activeTab === 'discussions' ? design.colors.primary : design.colors.textSecondary,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: design.spacing.sm
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'discussions') {
+                e.currentTarget.style.color = design.colors.textPrimary
+                e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'discussions') {
+                e.currentTarget.style.color = design.colors.textSecondary
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
-            <MessageCircle className="w-5 h-5 inline mr-2" />
+            <MessageCircle className="w-5 h-5" />
             Discussions
           </button>
           <button
             onClick={() => setActiveTab('leaderboard')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${
-              activeTab === 'leaderboard'
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            style={{
+              flex: 1,
+              padding: `${design.spacing.md} ${design.spacing.lg}`,
+              borderRadius: design.spacing.sm,
+              fontFamily: design.typography.fontFamily,
+              fontWeight: design.typography.weights.medium,
+              transition: 'all 0.2s ease-in-out',
+              backgroundColor: activeTab === 'leaderboard' ? design.colors.primary + '20' : 'transparent',
+              color: activeTab === 'leaderboard' ? design.colors.primary : design.colors.textSecondary,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: design.spacing.sm
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'leaderboard') {
+                e.currentTarget.style.color = design.colors.textPrimary
+                e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'leaderboard') {
+                e.currentTarget.style.color = design.colors.textSecondary
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
-            <Trophy className="w-5 h-5 inline mr-2" />
+            <Trophy className="w-5 h-5" />
             Leaderboard
           </button>
           <button
             onClick={() => setActiveTab('events')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${
-              activeTab === 'events'
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            style={{
+              flex: 1,
+              padding: `${design.spacing.md} ${design.spacing.lg}`,
+              borderRadius: design.spacing.sm,
+              fontFamily: design.typography.fontFamily,
+              fontWeight: design.typography.weights.medium,
+              transition: 'all 0.2s ease-in-out',
+              backgroundColor: activeTab === 'events' ? design.colors.primary + '20' : 'transparent',
+              color: activeTab === 'events' ? design.colors.primary : design.colors.textSecondary,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: design.spacing.sm
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'events') {
+                e.currentTarget.style.color = design.colors.textPrimary
+                e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'events') {
+                e.currentTarget.style.color = design.colors.textSecondary
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
-            <Bell className="w-5 h-5 inline mr-2" />
+            <Bell className="w-5 h-5" />
             Events
           </button>
         </div>
 
         {/* Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
+          gap: design.spacing.lg,
+          '@media (min-width: 1024px)': { gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }
+        }}>
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div style={{ gridColumn: 'span 2' }}>
             {activeTab === 'discussions' && (
-              <div className="space-y-6">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.lg }}>
                 {/* Recent Discussions */}
                 <div>
-                  <h2 className="text-2xl font-semibold text-slate-900 mb-6">Recent Discussions</h2>
-                  <div className="space-y-4">
+                  <h2 style={{
+                    ...design.text('heading'),
+                    fontSize: design.typography.sizes['2xl'],
+                    fontWeight: design.typography.weights.semibold,
+                    marginBottom: design.spacing.lg,
+                    color: design.colors.textPrimary
+                  }}>
+                    Recent Discussions
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.md }}>
                     {posts.map((post) => (
-                      <AgentFlowCard key={post.id} className="p-6 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <h3 className="text-lg font-semibold text-slate-900 hover:text-blue-600 cursor-pointer">
+                      <CoronaCard key={post.id} style={{ padding: design.spacing.lg }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          justifyContent: 'space-between',
+                          marginBottom: design.spacing.md
+                        }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: design.spacing.sm,
+                              marginBottom: design.spacing.sm
+                            }}>
+                              <h3 style={{
+                                ...design.text('heading'),
+                                fontSize: design.typography.sizes.lg,
+                                fontWeight: design.typography.weights.semibold,
+                                color: design.colors.textPrimary,
+                                cursor: 'pointer',
+                                transition: 'color 0.2s ease-in-out'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.color = design.colors.primary
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.color = design.colors.textPrimary
+                              }}
+                              >
                                 {post.title}
                               </h3>
                               {post.is_pinned && (
-                                <AgentFlowBadge variant="warning" size="sm">
+                                <CoronaBadge variant="warning" size="sm">
                                   📌 Pinned
-                                </AgentFlowBadge>
+                                </CoronaBadge>
                               )}
                               {post.is_featured && (
-                                <AgentFlowBadge variant="success" size="sm">
+                                <CoronaBadge variant="success" size="sm">
                                   ⭐ Featured
-                                </AgentFlowBadge>
+                                </CoronaBadge>
                               )}
                             </div>
-                            <div className="flex items-center space-x-4 text-sm text-slate-600 mb-3">
-                              <span className="flex items-center">
-                                <Users className="w-4 h-4 mr-1" />
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: design.spacing.md,
+                              fontSize: design.typography.sizes.sm,
+                              color: design.colors.textSecondary,
+                              marginBottom: design.spacing.sm
+                            }}>
+                              <span style={{ display: 'flex', alignItems: 'center' }}>
+                                <Users className="w-4 h-4" style={{ marginRight: design.spacing.xs, color: design.colors.textSecondary }} />
                                 {post.author.username}
                               </span>
-                              <span className="flex items-center">
+                              <span style={{ display: 'flex', alignItems: 'center' }}>
                                 <span 
-                                  className="w-2 h-2 rounded-full mr-2"
-                                  style={{ backgroundColor: post.category.color }}
+                                  style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    marginRight: design.spacing.sm,
+                                    backgroundColor: post.category.color
+                                  }}
                                 ></span>
                                 {post.category.name}
                               </span>
-                              <AgentFlowBadge 
+                              <CoronaBadge 
                                 variant={getPostTypeColor(post.post_type)}
                                 size="sm"
                               >
                                 {getPostTypeLabel(post.post_type)}
-                              </AgentFlowBadge>
+                              </CoronaBadge>
                             </div>
-                            <p className="text-slate-700 line-clamp-2 mb-4">
+                            <p style={{
+                              ...design.text('body'),
+                              color: design.colors.textSecondary,
+                              marginBottom: design.spacing.md,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden'
+                            }}>
                               {post.content}
                             </p>
                           </div>
                         </div>
                         
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-6 text-sm text-slate-600">
-                            <span className="flex items-center">
-                              <Eye className="w-4 h-4 mr-1" />
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between'
+                        }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: design.spacing.lg,
+                            fontSize: design.typography.sizes.sm,
+                            color: design.colors.textSecondary
+                          }}>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                              <Eye className="w-4 h-4" style={{ marginRight: design.spacing.xs, color: design.colors.textSecondary }} />
                               {post.view_count.toLocaleString()}
                             </span>
-                            <span className="flex items-center">
-                              <Reply className="w-4 h-4 mr-1" />
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                              <Reply className="w-4 h-4" style={{ marginRight: design.spacing.xs, color: design.colors.textSecondary }} />
                               {post.reply_count}
                             </span>
-                            <span className="flex items-center">
-                              <Heart className="w-4 h-4 mr-1" />
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                              <Heart className="w-4 h-4" style={{ marginRight: design.spacing.xs, color: design.colors.textSecondary }} />
                               {post.like_count}
                             </span>
                           </div>
-                          <span className="text-sm text-slate-500">
+                          <span style={{
+                            fontSize: design.typography.sizes.sm,
+                            color: design.colors.textMuted
+                          }}>
                             {getTimeAgo(post.last_activity_at)}
                           </span>
                         </div>
-                      </AgentFlowCard>
+                      </CoronaCard>
                     ))}
                   </div>
                 </div>
@@ -376,36 +622,75 @@ export const CommunityPage: React.FC = () => {
 
             {activeTab === 'leaderboard' && (
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900 mb-6">🏆 Top Contributors</h2>
-                <div className="space-y-4">
+                <h2 style={{
+                  ...design.text('heading'),
+                  fontSize: design.typography.sizes['2xl'],
+                  fontWeight: design.typography.weights.semibold,
+                  marginBottom: design.spacing.lg,
+                  color: design.colors.textPrimary
+                }}>
+                  🏆 Top Contributors
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.md }}>
                   {leaderboard.map((user, index) => (
-                    <AgentFlowCard key={user.user_id} className="p-6">
-                      <div className="flex items-center space-x-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
-                          index === 0 ? 'bg-yellow-500' : 
-                          index === 1 ? 'bg-gray-400' : 
-                          index === 2 ? 'bg-amber-600' : 'bg-slate-300'
-                        }`}>
+                    <CoronaCard key={user.user_id} style={{ padding: design.spacing.lg }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: design.spacing.md
+                      }}>
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: design.colors.white,
+                          fontWeight: design.typography.weights.bold,
+                          backgroundColor: index === 0 ? design.colors.warning : 
+                                         index === 1 ? design.colors.secondary : 
+                                         index === 2 ? '#CD7F32' : design.colors.bgTertiary
+                        }}>
                           {index + 1}
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <h3 className="font-semibold text-slate-900">{user.username}</h3>
-                            <AgentFlowBadge variant="primary" size="sm">
+                        <div style={{ flex: 1 }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: design.spacing.sm,
+                            marginBottom: design.spacing.xs
+                          }}>
+                            <h3 style={{
+                              ...design.text('heading'),
+                              fontWeight: design.typography.weights.semibold,
+                              color: design.colors.textPrimary
+                            }}>
+                              {user.username}
+                            </h3>
+                            <CoronaBadge variant="primary" size="sm">
                               {user.reputation_points.toLocaleString()} pts
-                            </AgentFlowBadge>
+                            </CoronaBadge>
                           </div>
-                          <div className="text-sm text-slate-600">
+                          <div style={{
+                            fontSize: design.typography.sizes.sm,
+                            color: design.colors.textSecondary
+                          }}>
                             {user.agents_created} agents • {user.agents_sold.toLocaleString()} sales • {user.posts_created} posts
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-slate-900">
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{
+                            ...design.text('heading'),
+                            fontSize: design.typography.sizes['2xl'],
+                            fontWeight: design.typography.weights.bold,
+                            color: design.colors.textPrimary
+                          }}>
                             #{user.rank_position}
                           </div>
                         </div>
                       </div>
-                    </AgentFlowCard>
+                    </CoronaCard>
                   ))}
                 </div>
               </div>
@@ -413,78 +698,126 @@ export const CommunityPage: React.FC = () => {
 
             {activeTab === 'events' && (
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900 mb-6">Community Events</h2>
-                <div className="text-center py-12">
-                  <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 mb-2">No events scheduled</h3>
-                  <p className="text-slate-600">Check back later for upcoming community events!</p>
+                <h2 style={{
+                  ...design.text('heading'),
+                  fontSize: design.typography.sizes['2xl'],
+                  fontWeight: design.typography.weights.semibold,
+                  marginBottom: design.spacing.lg,
+                  color: design.colors.textPrimary
+                }}>
+                  Community Events
+                </h2>
+                <div style={{
+                  textAlign: 'center',
+                  padding: `${design.spacing.xl} 0`
+                }}>
+                  <Bell className="w-16 h-16 mx-auto mb-4" style={{ color: design.colors.textMuted }} />
+                  <h3 style={{
+                    ...design.text('heading'),
+                    fontSize: design.typography.sizes.lg,
+                    fontWeight: design.typography.weights.medium,
+                    marginBottom: design.spacing.sm,
+                    color: design.colors.textPrimary
+                  }}>
+                    No events scheduled
+                  </h3>
+                  <p style={{
+                    ...design.text('body'),
+                    color: design.colors.textSecondary
+                  }}>
+                    Check back later for upcoming community events!
+                  </p>
                 </div>
               </div>
             )}
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.lg }}>
             {/* Quick Stats */}
-            <AgentFlowCard className="p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Community Stats</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Total Posts</span>
-                  <span className="font-semibold">1,234</span>
+            <CoronaCard style={{ padding: design.spacing.lg }}>
+              <h3 style={{
+                ...design.text('heading'),
+                fontSize: design.typography.sizes.lg,
+                fontWeight: design.typography.weights.semibold,
+                marginBottom: design.spacing.md,
+                color: design.colors.textPrimary
+              }}>
+                Community Stats
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: design.colors.textSecondary }}>Total Posts</span>
+                  <span style={{ fontWeight: design.typography.weights.semibold, color: design.colors.textPrimary }}>1,234</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Active Users</span>
-                  <span className="font-semibold">567</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: design.colors.textSecondary }}>Active Users</span>
+                  <span style={{ fontWeight: design.typography.weights.semibold, color: design.colors.textPrimary }}>567</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Agents Created</span>
-                  <span className="font-semibold">89</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: design.colors.textSecondary }}>Agents Created</span>
+                  <span style={{ fontWeight: design.typography.weights.semibold, color: design.colors.textPrimary }}>89</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Workflows Shared</span>
-                  <span className="font-semibold">234</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: design.colors.textSecondary }}>Workflows Shared</span>
+                  <span style={{ fontWeight: design.typography.weights.semibold, color: design.colors.textPrimary }}>234</span>
                 </div>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
 
             {/* Quick Actions */}
-            <AgentFlowCard className="p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <AgentFlowButton variant="primary" className="w-full">
-                  <MessageCircle className="w-4 h-4 mr-2" />
+            <CoronaCard style={{ padding: design.spacing.lg }}>
+              <h3 style={{
+                ...design.text('heading'),
+                fontSize: design.typography.sizes.lg,
+                fontWeight: design.typography.weights.semibold,
+                marginBottom: design.spacing.md,
+                color: design.colors.textPrimary
+              }}>
+                Quick Actions
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
+                <CoronaButton variant="primary" style={{ width: '100%' }}>
+                  <MessageCircle className="w-4 h-4" style={{ marginRight: design.spacing.sm }} />
                   Start Discussion
-                </AgentFlowButton>
-                <AgentFlowButton variant="outline" className="w-full">
-                  <TrendingUp className="w-4 h-4 mr-2" />
+                </CoronaButton>
+                <CoronaButton variant="outline-primary" style={{ width: '100%' }}>
+                  <TrendingUp className="w-4 h-4" style={{ marginRight: design.spacing.sm }} />
                   Browse Agents
-                </AgentFlowButton>
-                <AgentFlowButton variant="outline" className="w-full">
-                  <Star className="w-4 h-4 mr-2" />
+                </CoronaButton>
+                <CoronaButton variant="outline-primary" style={{ width: '100%' }}>
+                  <Star className="w-4 h-4" style={{ marginRight: design.spacing.sm }} />
                   Share Workflow
-                </AgentFlowButton>
+                </CoronaButton>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
 
             {/* Recent Activity */}
-            <AgentFlowCard className="p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                <div className="text-sm">
-                  <span className="text-slate-600">Sarah Chen</span> created a new tutorial
-                  <div className="text-xs text-slate-500">2 hours ago</div>
+            <CoronaCard style={{ padding: design.spacing.lg }}>
+              <h3 style={{
+                ...design.text('heading'),
+                fontSize: design.typography.sizes.lg,
+                fontWeight: design.typography.weights.semibold,
+                marginBottom: design.spacing.md,
+                color: design.colors.textPrimary
+              }}>
+                Recent Activity
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
+                <div style={{ fontSize: design.typography.sizes.sm }}>
+                  <span style={{ color: design.colors.textSecondary }}>Sarah Chen</span> created a new tutorial
+                  <div style={{ fontSize: design.typography.sizes.xs, color: design.colors.textMuted, marginTop: design.spacing.xs }}>2 hours ago</div>
                 </div>
-                <div className="text-sm">
-                  <span className="text-slate-600">Mike Johnson</span> asked a question
-                  <div className="text-xs text-slate-500">4 hours ago</div>
+                <div style={{ fontSize: design.typography.sizes.sm }}>
+                  <span style={{ color: design.colors.textSecondary }}>Mike Johnson</span> asked a question
+                  <div style={{ fontSize: design.typography.sizes.xs, color: design.colors.textMuted, marginTop: design.spacing.xs }}>4 hours ago</div>
                 </div>
-                <div className="text-sm">
-                  <span className="text-slate-600">Alex Thompson</span> shared a workflow
-                  <div className="text-xs text-slate-500">6 hours ago</div>
+                <div style={{ fontSize: design.typography.sizes.sm }}>
+                  <span style={{ color: design.colors.textSecondary }}>Alex Thompson</span> shared a workflow
+                  <div style={{ fontSize: design.typography.sizes.xs, color: design.colors.textMuted, marginTop: design.spacing.xs }}>6 hours ago</div>
                 </div>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
           </div>
         </div>
       </div>

@@ -12,14 +12,16 @@ import {
   MoreHorizontal,
   FolderOpen
 } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { Badge } from '../ui/Badge'
+import { CoronaButton } from '../ui/CoronaButton'
+import { CoronaBadge } from '../ui/CoronaBadge'
 
 interface WorkflowToolbarProps {
   onSave: () => void
   onRun: () => void
   onStop?: () => void
   onOpenWorkflowManager?: () => void
+  onClearWorkflow?: () => void
+  onEmergencyReset?: () => void
   isReadOnly?: boolean
   selectedNodes?: string[]
   isExecuting?: boolean
@@ -31,17 +33,19 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
   onRun,
   onStop,
   onOpenWorkflowManager,
+  onClearWorkflow,
+  onEmergencyReset,
   isReadOnly = false,
   selectedNodes = [],
   isExecuting = false,
   hasUnsavedChanges = false
 }) => {
   return (
-    <div className="bg-white border-b border-gray-300 px-6 py-4">
+    <div className="px-6 py-4" style={{ backgroundColor: '#1a1a2e', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center gap-4">
-          <Button
+          <CoronaButton
             variant="ghost"
             size="sm"
             onClick={onOpenWorkflowManager}
@@ -49,16 +53,16 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
           >
             <FolderOpen className="h-4 w-4" />
             Workflows
-          </Button>
+          </CoronaButton>
           
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold text-gray-900">
               Workflow Editor
             </h1>
             {hasUnsavedChanges && (
-              <Badge variant="warning" size="sm">
+              <CoronaBadge variant="warning" size="sm">
                 Unsaved
-              </Badge>
+              </CoronaBadge>
             )}
           </div>
           
@@ -87,12 +91,12 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
         {/* Right Section - Actions */}
         <div className="flex items-center gap-2">
           {/* View Toggle */}
-          <Button variant="ghost" size="sm" className="p-2">
+          <CoronaButton variant="ghost" size="sm" className="p-2">
             <Eye className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
 
           {/* Save */}
-          <Button 
+          <CoronaButton 
             variant="secondary" 
             size="sm" 
             onClick={onSave}
@@ -101,11 +105,39 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
           >
             <Save className="h-4 w-4" />
             Save
-          </Button>
+          </CoronaButton>
+
+          {/* Clear Workflow */}
+          {onClearWorkflow && (
+            <CoronaButton 
+              variant="outline" 
+              size="sm" 
+              onClick={onClearWorkflow}
+              disabled={isReadOnly}
+              className="flex items-center gap-2 text-red-500 border-red-500 hover:bg-red-50"
+            >
+              <Square className="h-4 w-4" />
+              Clear
+            </CoronaButton>
+          )}
+
+          {/* Emergency Reset */}
+          {onEmergencyReset && (
+            <CoronaButton 
+              variant="primary" 
+              size="sm" 
+              onClick={onEmergencyReset}
+              disabled={isReadOnly}
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+            >
+              <Play className="h-4 w-4" />
+              Reset
+            </CoronaButton>
+          )}
 
           {/* Run/Stop */}
           {isExecuting ? (
-            <Button 
+            <CoronaButton 
               variant="danger" 
               size="sm"
               onClick={onStop}
@@ -113,9 +145,9 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
             >
               <Square className="h-4 w-4" />
               Stop
-            </Button>
+            </CoronaButton>
           ) : (
-            <Button 
+            <CoronaButton 
               size="sm" 
               onClick={onRun}
               disabled={isReadOnly}
@@ -123,35 +155,35 @@ export const WorkflowToolbar: React.FC<WorkflowToolbarProps> = ({
             >
               <Play className="h-4 w-4" />
               Run
-            </Button>
+            </CoronaButton>
           )}
 
           {/* Divider */}
           <div className="w-px h-6 bg-border-primary mx-2"></div>
 
           {/* Import/Export */}
-          <Button variant="ghost" size="sm" className="p-2" title="Import">
+          <CoronaButton variant="ghost" size="sm" className="p-2" title="Import">
             <Upload className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
           
-          <Button variant="ghost" size="sm" className="p-2" title="Export">
+          <CoronaButton variant="ghost" size="sm" className="p-2" title="Export">
             <Download className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
 
           {/* Share */}
-          <Button variant="ghost" size="sm" className="p-2" title="Share">
+          <CoronaButton variant="ghost" size="sm" className="p-2" title="Share">
             <Share2 className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
 
           {/* Settings */}
-          <Button variant="ghost" size="sm" className="p-2" title="Settings">
+          <CoronaButton variant="ghost" size="sm" className="p-2" title="Settings">
             <Settings className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
 
           {/* More Actions */}
-          <Button variant="ghost" size="sm" className="p-2" title="More actions">
+          <CoronaButton variant="ghost" size="sm" className="p-2" title="More actions">
             <MoreHorizontal className="h-4 w-4" />
-          </Button>
+          </CoronaButton>
         </div>
       </div>
     </div>

@@ -4,7 +4,8 @@ import {
   ArrowLeft, Heart, Reply, Share2, Flag, MoreHorizontal, 
   Eye, MessageCircle, Clock, User, ThumbsUp, ThumbsDown 
 } from 'lucide-react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 
 interface ForumPost {
   id: string
@@ -47,6 +48,7 @@ interface ForumComment {
 }
 
 export const ForumPostPage: React.FC = () => {
+  const design = useCoronaDesign()
   const { postId } = useParams<{ postId: string }>()
   const navigate = useNavigate()
   const [post, setPost] = useState<ForumPost | null>(null)
@@ -220,10 +222,10 @@ What patterns have you found most effective? I'd love to hear your experiences!`
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-4">Post not found</h1>
           <p className="text-slate-600 mb-6">The post you're looking for doesn't exist or has been removed.</p>
-          <AgentFlowButton onClick={() => navigate('/community')}>
+          <CoronaButton onClick={() => navigate('/community')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Community
-          </AgentFlowButton>
+          </CoronaButton>
         </div>
       </div>
     )
@@ -233,31 +235,31 @@ What patterns have you found most effective? I'd love to hear your experiences!`
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
-        <AgentFlowButton
+        <CoronaButton
           variant="outline"
           onClick={() => navigate('/community')}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Community
-        </AgentFlowButton>
+        </CoronaButton>
 
         {/* Post */}
-        <AgentFlowCard className="p-8 mb-6">
+        <CoronaCard className="p-8 mb-6">
           {/* Post Header */}
           <div className="flex items-start justify-between mb-6">
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-4">
                 <h1 className="text-3xl font-bold text-slate-900">{post.title}</h1>
                 {post.is_pinned && (
-                  <AgentFlowBadge variant="warning" size="sm">
+                  <CoronaBadge variant="warning" size="sm">
                     📌 Pinned
-                  </AgentFlowBadge>
+                  </CoronaBadge>
                 )}
                 {post.is_featured && (
-                  <AgentFlowBadge variant="success" size="sm">
+                  <CoronaBadge variant="success" size="sm">
                     ⭐ Featured
-                  </AgentFlowBadge>
+                  </CoronaBadge>
                 )}
               </div>
               
@@ -286,16 +288,16 @@ What patterns have you found most effective? I'd love to hear your experiences!`
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {post.tags.map((tag) => (
-                  <AgentFlowBadge key={tag} variant="secondary" size="sm">
+                  <CoronaBadge key={tag} variant="secondary" size="sm">
                     #{tag}
-                  </AgentFlowBadge>
+                  </CoronaBadge>
                 ))}
               </div>
             </div>
 
             {/* Actions */}
             <div className="flex items-center space-x-2">
-              <AgentFlowButton
+              <CoronaButton
                 variant="outline"
                 size="sm"
                 onClick={handleLike}
@@ -303,14 +305,14 @@ What patterns have you found most effective? I'd love to hear your experiences!`
               >
                 <Heart className={`w-4 h-4 mr-1 ${liked ? 'fill-current' : ''}`} />
                 {post.like_count}
-              </AgentFlowButton>
-              <AgentFlowButton variant="outline" size="sm">
+              </CoronaButton>
+              <CoronaButton variant="outline" size="sm">
                 <Share2 className="w-4 h-4 mr-1" />
                 Share
-              </AgentFlowButton>
-              <AgentFlowButton variant="outline" size="sm">
+              </CoronaButton>
+              <CoronaButton variant="outline" size="sm">
                 <Flag className="w-4 h-4" />
-              </AgentFlowButton>
+              </CoronaButton>
             </div>
           </div>
 
@@ -338,7 +340,7 @@ What patterns have you found most effective? I'd love to hear your experiences!`
               </span>
             </div>
           </div>
-        </AgentFlowCard>
+        </CoronaCard>
 
         {/* Comments Section */}
         <div className="space-y-6">
@@ -347,7 +349,7 @@ What patterns have you found most effective? I'd love to hear your experiences!`
           </h2>
 
           {/* New Comment Form */}
-          <AgentFlowCard className="p-6">
+          <CoronaCard className="p-6">
             <h3 className="text-lg font-medium text-slate-900 mb-4">Add a comment</h3>
             <textarea
               value={newComment}
@@ -356,17 +358,17 @@ What patterns have you found most effective? I'd love to hear your experiences!`
               className="w-full h-32 p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <div className="flex justify-end mt-4">
-              <AgentFlowButton onClick={handleComment} disabled={!newComment.trim()}>
+              <CoronaButton onClick={handleComment} disabled={!newComment.trim()}>
                 <Reply className="w-4 h-4 mr-2" />
                 Post Comment
-              </AgentFlowButton>
+              </CoronaButton>
             </div>
-          </AgentFlowCard>
+          </CoronaCard>
 
           {/* Comments List */}
           <div className="space-y-4">
             {comments.map((comment) => (
-              <AgentFlowCard key={comment.id} className="p-6">
+              <CoronaCard key={comment.id} className="p-6">
                 <div className="flex items-start space-x-4">
                   <img
                     src={comment.author.avatar_url || `https://ui-avatars.com/api/?name=${comment.author.username}&background=667eea&color=fff`}
@@ -377,9 +379,9 @@ What patterns have you found most effective? I'd love to hear your experiences!`
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="font-medium text-slate-900">{comment.author.username}</span>
                       {comment.is_solution && (
-                        <AgentFlowBadge variant="success" size="sm">
+                        <CoronaBadge variant="success" size="sm">
                           ✓ Solution
-                        </AgentFlowBadge>
+                        </CoronaBadge>
                       )}
                       <span className="text-sm text-slate-500">
                         {getTimeAgo(comment.created_at)}
@@ -402,7 +404,7 @@ What patterns have you found most effective? I'd love to hear your experiences!`
                     </div>
                   </div>
                 </div>
-              </AgentFlowCard>
+              </CoronaCard>
             ))}
           </div>
         </div>

@@ -47,6 +47,7 @@ export interface WorkflowNode {
   }
   data: {
     agentType?: string
+    serviceType?: string
     config: Record<string, any>
     label: string
     status?: 'idle' | 'running' | 'completed' | 'error'

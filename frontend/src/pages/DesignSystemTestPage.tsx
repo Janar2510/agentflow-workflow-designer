@@ -1,10 +1,20 @@
 import React from 'react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge, AgentFlowContainer, AgentFlowGrid, AgentFlowHorizontal } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 import { Bot, Workflow, Zap, Users, Star, Download, Eye } from 'lucide-react'
 
 export const DesignSystemTestPage: React.FC = () => {
+  const design = useCoronaDesign()
+  
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: design.colors.bgPrimary,
+    padding: design.spacing.xl,
+    fontFamily: design.typography.fontFamily,
+  }
+
   return (
-    <AgentFlowContainer>
+    <div style={pageStyles}>
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -19,13 +29,13 @@ export const DesignSystemTestPage: React.FC = () => {
         {/* Card Variants */}
         <div>
           <h2 className="af-text-2xl af-font-semibold af-text-primary mb-6">Card Variants</h2>
-          <AgentFlowGrid>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="af-card--gradient-border">
               <h3 className="af-text-xl af-font-semibold af-text-primary mb-2">Gradient Border Card</h3>
               <p className="af-text-secondary mb-4">
                 This card has the signature animated gradient border effect.
               </p>
-              <AgentFlowBadge variant="primary">Active</AgentFlowBadge>
+              <CoronaBadge variant="primary">Active</CoronaBadge>
             </div>
 
             <div className="af-card--glass">
@@ -33,7 +43,7 @@ export const DesignSystemTestPage: React.FC = () => {
               <p className="af-text-secondary mb-4">
                 This card uses glassmorphism with backdrop-filter blur.
               </p>
-              <AgentFlowBadge variant="success">Online</AgentFlowBadge>
+              <CoronaBadge variant="success">Online</CoronaBadge>
             </div>
 
             <div className="af-card--glass-light">
@@ -41,7 +51,7 @@ export const DesignSystemTestPage: React.FC = () => {
               <p className="af-text-secondary mb-4">
                 This card uses light glassmorphism effect.
               </p>
-              <AgentFlowBadge variant="warning">Pending</AgentFlowBadge>
+              <CoronaBadge variant="warning">Pending</CoronaBadge>
             </div>
 
             <div className="af-card--glass-strong">
@@ -49,19 +59,19 @@ export const DesignSystemTestPage: React.FC = () => {
               <p className="af-text-secondary mb-4">
                 This card uses strong glassmorphism effect.
               </p>
-              <AgentFlowBadge variant="danger">Error</AgentFlowBadge>
+              <CoronaBadge variant="danger">Error</CoronaBadge>
             </div>
-          </AgentFlowGrid>
+          </div>
         </div>
 
         {/* Button Variants */}
         <div>
           <h2 className="af-text-2xl af-font-semibold af-text-primary mb-6">Button Variants</h2>
           <div className="flex flex-wrap gap-4">
-            <AgentFlowButton variant="primary">Primary Button</AgentFlowButton>
-            <AgentFlowButton variant="success">Success Button</AgentFlowButton>
-            <AgentFlowButton variant="danger">Danger Button</AgentFlowButton>
-            <AgentFlowButton variant="ghost">Ghost Button</AgentFlowButton>
+            <CoronaButton variant="primary">Primary Button</CoronaButton>
+            <CoronaButton variant="success">Success Button</CoronaButton>
+            <CoronaButton variant="danger">Danger Button</CoronaButton>
+            <CoronaButton variant="ghost">Ghost Button</CoronaButton>
           </div>
         </div>
 
@@ -69,17 +79,17 @@ export const DesignSystemTestPage: React.FC = () => {
         <div>
           <h2 className="af-text-2xl af-font-semibold af-text-primary mb-6">Badge Variants</h2>
           <div className="flex flex-wrap gap-4">
-            <AgentFlowBadge variant="primary">Primary Badge</AgentFlowBadge>
-            <AgentFlowBadge variant="success">Success Badge</AgentFlowBadge>
-            <AgentFlowBadge variant="warning">Warning Badge</AgentFlowBadge>
-            <AgentFlowBadge variant="danger">Danger Badge</AgentFlowBadge>
+            <CoronaBadge variant="primary">Primary Badge</CoronaBadge>
+            <CoronaBadge variant="success">Success Badge</CoronaBadge>
+            <CoronaBadge variant="warning">Warning Badge</CoronaBadge>
+            <CoronaBadge variant="danger">Danger Badge</CoronaBadge>
           </div>
         </div>
 
         {/* Horizontal Layout */}
         <div>
           <h2 className="af-text-2xl af-font-semibold af-text-primary mb-6">Horizontal Layout</h2>
-          <AgentFlowHorizontal>
+          <div className="flex flex-wrap gap-4">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="af-card--glass-light">
                 <h4 className="af-text-lg af-font-medium af-text-primary mb-2">
@@ -90,7 +100,7 @@ export const DesignSystemTestPage: React.FC = () => {
                 </p>
               </div>
             ))}
-          </AgentFlowHorizontal>
+          </div>
         </div>
 
         {/* Icons with Colors */}
@@ -130,7 +140,7 @@ export const DesignSystemTestPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </AgentFlowContainer>
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Clock, CheckCircle, XCircle, Play, AlertCircle } from 'lucide-react'
-import { Card } from '../ui/Card'
-import { Badge } from '../ui/Badge'
+import { CoronaCard } from '../ui/CoronaCard'
+import { CoronaBadge } from '../ui/CoronaBadge'
 
 interface ExecutionStep {
   nodeId: string
@@ -69,12 +69,12 @@ export const ExecutionLogs: React.FC<ExecutionLogsProps> = ({ steps, isExecuting
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {steps.length === 0 ? (
-          <Card className="p-4 text-center text-gray-500">
+          <CoronaCard className="p-4 text-center text-gray-500">
             No execution steps yet
-          </Card>
+          </CoronaCard>
         ) : (
           steps.map((step, index) => (
-            <Card key={step.nodeId} className="p-3">
+            <CoronaCard key={step.nodeId} className="p-3">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-1">
                   {getStatusIcon(step.status)}
@@ -85,9 +85,9 @@ export const ExecutionLogs: React.FC<ExecutionLogsProps> = ({ steps, isExecuting
                     <span className="font-medium text-gray-900 text-sm">
                       {step.nodeId}
                     </span>
-                    <Badge variant={getStatusColor(step.status) as any} size="sm">
+                    <CoronaBadge variant={getStatusColor(step.status) as any} size="sm">
                       {step.status}
-                    </Badge>
+                    </CoronaBadge>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
@@ -123,7 +123,7 @@ export const ExecutionLogs: React.FC<ExecutionLogsProps> = ({ steps, isExecuting
                   )}
                 </div>
               </div>
-            </Card>
+            </CoronaCard>
           ))
         )}
       </div>

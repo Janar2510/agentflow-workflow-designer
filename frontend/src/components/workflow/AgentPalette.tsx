@@ -1,6 +1,7 @@
 import React from 'react'
-import { Card } from '../ui/Card'
-import { Badge } from '../ui/Badge'
+import { CoronaCard } from '../ui/CoronaCard'
+import { CoronaBadge } from '../ui/CoronaBadge'
+import { useCoronaDesign } from '../../hooks/useCoronaDesign'
 import { 
   Code, 
   Database, 
@@ -95,6 +96,8 @@ const nodeCategories = [
 ]
 
 export const AgentPalette: React.FC = () => {
+  const design = useCoronaDesign()
+
   const onDragStart = (event: React.DragEvent, node: any) => {
     const dragData = JSON.stringify({
       nodeType: node.nodeType,
@@ -106,56 +109,143 @@ export const AgentPalette: React.FC = () => {
   }
 
   return (
-    <div className="w-80 bg-white border-r border-gray-300 p-4 overflow-y-auto">
-      <div className="space-y-6">
+    <div className="w-80 p-4 overflow-y-auto" style={{ backgroundColor: design.colors.bgSecondary, borderRight: `1px solid ${design.colors.borderPrimary}` }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.lg }}>
         {/* Header */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+          <h2 style={{ 
+            ...design.text('heading'),
+            color: design.colors.textPrimary,
+            marginBottom: design.spacing.sm,
+            fontSize: design.typography.sizes.lg,
+            fontWeight: design.typography.weights.semibold
+          }}>
             Agent Palette
           </h2>
-          <p className="text-sm text-gray-600">
+          <p style={{ 
+            ...design.text('body'),
+            color: design.colors.textSecondary,
+            fontSize: design.typography.sizes.sm
+          }}>
             Drag agents to the canvas to build your workflow
           </p>
         </div>
 
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <div style={{ position: 'relative' }}>
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{ color: design.colors.textMuted }} />
           <input
             type="text"
             placeholder="Search agents..."
-            className="w-full pl-10 pr-4 py-2 bg-bg-tertiary border border-gray-300 rounded-lg text-gray-900 placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            style={{
+              width: '100%',
+              paddingLeft: '2.5rem',
+              paddingRight: design.spacing.md,
+              paddingTop: design.spacing.sm,
+              paddingBottom: design.spacing.sm,
+              backgroundColor: design.colors.bgTertiary,
+              border: `1px solid ${design.colors.borderPrimary}`,
+              borderRadius: design.spacing.sm,
+              color: design.colors.textPrimary,
+              fontSize: design.typography.sizes.sm,
+              outline: 'none',
+              transition: 'all 0.2s ease-in-out',
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = design.colors.primary
+              e.target.style.boxShadow = `0 0 0 2px ${design.colors.primary}20`
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = design.colors.borderPrimary
+              e.target.style.boxShadow = 'none'
+            }}
           />
         </div>
 
         {/* Node Categories */}
         {nodeCategories.map((category) => (
           <div key={category.name}>
-            <div className="flex items-center gap-2 mb-3">
-              <category.icon className="h-4 w-4 text-gray-900" />
-              <h3 className="font-medium text-gray-900">{category.name}</h3>
-              <Badge variant={category.color as any} size="sm">
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: design.spacing.sm, 
+              marginBottom: design.spacing.sm 
+            }}>
+              <category.icon className="h-4 w-4" style={{ color: design.colors.textPrimary }} />
+              <h3 style={{ 
+                ...design.text('body'),
+                fontWeight: design.typography.weights.medium,
+                color: design.colors.textPrimary
+              }}>
+                {category.name}
+              </h3>
+              <CoronaBadge variant={category.color as any} size="sm">
                 {category.nodes.length}
-              </Badge>
+              </CoronaBadge>
             </div>
             
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
               {category.nodes.map((node) => (
                 <div
                   key={node.id}
                   draggable
                   onDragStart={(event) => onDragStart(event, node)}
-                  className="p-3 bg-bg-tertiary rounded-lg cursor-grab hover:bg-bg-glass transition-colors group"
+                  style={{
+                    padding: design.spacing.sm,
+                    backgroundColor: design.colors.bgTertiary,
+                    borderRadius: design.spacing.sm,
+                    cursor: 'grab',
+                    transition: 'all 0.2s ease-in-out',
+                    border: `1px solid ${design.colors.borderPrimary}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = design.colors.primary + '20'
+                    e.currentTarget.style.borderColor = design.colors.primary
+                    e.currentTarget.style.transform = 'translateY(-1px)'
+                    e.currentTarget.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.3)`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+                    e.currentTarget.style.borderColor = design.colors.borderPrimary
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <category.icon className="h-4 w-4 text-white" />
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: design.spacing.sm }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      background: `linear-gradient(135deg, ${design.colors.primary}, ${design.colors.secondary})`,
+                      borderRadius: design.spacing.sm,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      transition: 'transform 0.2s ease-in-out',
+                    }}>
+                      <category.icon className="h-4 w-4" style={{ color: design.colors.white }} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 text-sm mb-1">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4 style={{ 
+                        ...design.text('body'),
+                        fontWeight: design.typography.weights.semibold,
+                        color: design.colors.textPrimary,
+                        fontSize: design.typography.sizes.sm,
+                        marginBottom: design.spacing.xs,
+                        lineHeight: 1.4
+                      }}>
                         {node.name}
                       </h4>
-                      <p className="text-xs text-gray-500 line-clamp-2">
+                      <p style={{ 
+                        ...design.text('caption'),
+                        color: design.colors.textSecondary,
+                        fontSize: design.typography.sizes.xs,
+                        lineHeight: 1.4,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
+                      }}>
                         {node.description}
                       </p>
                     </div>
@@ -168,17 +258,54 @@ export const AgentPalette: React.FC = () => {
 
         {/* Custom Agents */}
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="h-4 w-4 text-gray-900" />
-            <h3 className="font-medium text-gray-900">Custom Agents</h3>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: design.spacing.sm, 
+            marginBottom: design.spacing.sm 
+          }}>
+            <Shield className="h-4 w-4" style={{ color: design.colors.textPrimary }} />
+            <h3 style={{ 
+              ...design.text('body'),
+              fontWeight: design.typography.weights.medium,
+              color: design.colors.textPrimary
+            }}>
+              Custom Agents
+            </h3>
           </div>
           
-          <div className="p-4 bg-bg-tertiary rounded-lg border-2 border-dashed border-gray-300 text-center">
-            <Image className="h-8 w-8 text-gray-500 mx-auto mb-2" />
-            <p className="text-sm text-gray-500 mb-3">
+          <div style={{
+            padding: design.spacing.md,
+            backgroundColor: design.colors.bgTertiary,
+            borderRadius: design.spacing.sm,
+            border: `2px dashed ${design.colors.borderPrimary}`,
+            textAlign: 'center'
+          }}>
+            <Image className="h-8 w-8 mx-auto mb-2" style={{ color: design.colors.textMuted }} />
+            <p style={{ 
+              ...design.text('body'),
+              color: design.colors.textSecondary,
+              fontSize: design.typography.sizes.sm,
+              marginBottom: design.spacing.sm
+            }}>
               Create your own custom agents
             </p>
-            <button className="text-xs text-blue-500 hover:text-gradient-secondary font-medium">
+            <button style={{
+              ...design.text('caption'),
+              color: design.colors.primary,
+              fontWeight: design.typography.weights.medium,
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s ease-in-out'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = design.colors.secondary
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = design.colors.primary
+            }}
+            >
               + Create Custom Agent
             </button>
           </div>
@@ -186,12 +313,23 @@ export const AgentPalette: React.FC = () => {
 
         {/* Recent Nodes */}
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <BarChart3 className="h-4 w-4 text-gray-900" />
-            <h3 className="font-medium text-gray-900">Recently Used</h3>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: design.spacing.sm, 
+            marginBottom: design.spacing.sm 
+          }}>
+            <BarChart3 className="h-4 w-4" style={{ color: design.colors.textPrimary }} />
+            <h3 style={{ 
+              ...design.text('body'),
+              fontWeight: design.typography.weights.medium,
+              color: design.colors.textPrimary
+            }}>
+              Recently Used
+            </h3>
           </div>
           
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
             {[
               { name: 'Text Generator', id: 'llm_text_generator', nodeType: 'agent' },
               { name: 'Data Processor', id: 'data_processor', nodeType: 'agent' },
@@ -202,13 +340,42 @@ export const AgentPalette: React.FC = () => {
                 key={node.id}
                 draggable
                 onDragStart={(event) => onDragStart(event, node)}
-                className="p-2 bg-bg-tertiary rounded cursor-grab hover:bg-bg-glass transition-colors"
+                style={{
+                  padding: design.spacing.sm,
+                  backgroundColor: design.colors.bgTertiary,
+                  borderRadius: design.spacing.sm,
+                  cursor: 'grab',
+                  transition: 'all 0.2s ease-in-out',
+                  border: `1px solid ${design.colors.borderPrimary}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = design.colors.primary + '20'
+                  e.currentTarget.style.borderColor = design.colors.primary
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+                  e.currentTarget.style.borderColor = design.colors.borderPrimary
+                }}
               >
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded flex items-center justify-center">
-                    <Code className="h-3 w-3 text-white" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: design.spacing.sm }}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    background: `linear-gradient(135deg, ${design.colors.primary}, ${design.colors.secondary})`,
+                    borderRadius: design.spacing.xs,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Code className="h-3 w-3" style={{ color: design.colors.white }} />
                   </div>
-                  <span className="text-sm text-gray-900">{node.name}</span>
+                  <span style={{ 
+                    ...design.text('body'),
+                    color: design.colors.textPrimary,
+                    fontSize: design.typography.sizes.sm
+                  }}>
+                    {node.name}
+                  </span>
                 </div>
               </div>
             ))}

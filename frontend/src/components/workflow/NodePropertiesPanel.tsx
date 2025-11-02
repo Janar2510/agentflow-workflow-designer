@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { X, Save, RefreshCw } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { Input } from '../ui/Input'
-import { Card } from '../ui/Card'
+import { CoronaButton } from '../ui/CoronaButton'
+import { CoronaCard } from '../ui/CoronaCard'
+import { useCoronaDesign } from '../../hooks/useCoronaDesign'
 
 interface NodePropertiesPanelProps {
   selectedNode: any
@@ -15,6 +15,7 @@ export const NodePropertiesPanel: React.FC<NodePropertiesPanelProps> = ({
   onClose,
   onUpdateNode
 }) => {
+  const design = useCoronaDesign()
   const [formData, setFormData] = useState(selectedNode?.data || {})
   const [isDirty, setIsDirty] = useState(false)
 
@@ -36,15 +37,38 @@ export const NodePropertiesPanel: React.FC<NodePropertiesPanelProps> = ({
   }
 
   const renderAgentConfig = () => (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.md }}>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label style={{ 
+          ...design.text('body'),
+          color: design.colors.textPrimary,
+          marginBottom: design.spacing.xs,
+          display: 'block'
+        }}>
           Agent Type
         </label>
         <select
           value={formData.agentType || ''}
           onChange={(e) => handleInputChange('agentType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style={{
+            width: '100%',
+            padding: `${design.spacing.sm} ${design.spacing.md}`,
+            backgroundColor: design.colors.bgTertiary,
+            border: `1px solid ${design.colors.borderPrimary}`,
+            borderRadius: design.spacing.sm,
+            color: design.colors.textPrimary,
+            fontSize: design.typography.sizes.sm,
+            outline: 'none',
+            transition: 'all 0.2s ease-in-out',
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = design.colors.primary
+            e.target.style.boxShadow = `0 0 0 2px ${design.colors.primary}20`
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = design.colors.borderPrimary
+            e.target.style.boxShadow = 'none'
+          }}
         >
           <option value="llm_text_generator">Text Generator</option>
           <option value="llm_chat">Chat Agent</option>
@@ -55,13 +79,36 @@ export const NodePropertiesPanel: React.FC<NodePropertiesPanelProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label style={{ 
+          ...design.text('body'),
+          color: design.colors.textPrimary,
+          marginBottom: design.spacing.xs,
+          display: 'block'
+        }}>
           Model
         </label>
         <select
           value={formData.config?.model || 'gpt-3.5-turbo'}
           onChange={(e) => handleInputChange('config', { ...formData.config, model: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style={{
+            width: '100%',
+            padding: `${design.spacing.sm} ${design.spacing.md}`,
+            backgroundColor: design.colors.bgTertiary,
+            border: `1px solid ${design.colors.borderPrimary}`,
+            borderRadius: design.spacing.sm,
+            color: design.colors.textPrimary,
+            fontSize: design.typography.sizes.sm,
+            outline: 'none',
+            transition: 'all 0.2s ease-in-out',
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = design.colors.primary
+            e.target.style.boxShadow = `0 0 0 2px ${design.colors.primary}20`
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = design.colors.borderPrimary
+            e.target.style.boxShadow = 'none'
+          }}
         >
           <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
           <option value="gpt-4">GPT-4</option>
@@ -254,42 +301,120 @@ export const NodePropertiesPanel: React.FC<NodePropertiesPanelProps> = ({
   }
 
   return (
-    <div className="w-80 bg-white border-l border-gray-300 p-4 overflow-y-auto">
-      <div className="space-y-4">
+    <div style={{
+      width: '320px',
+      height: '100vh',
+      backgroundColor: design.colors.bgSecondary,
+      borderLeft: `1px solid ${design.colors.borderPrimary}`,
+      padding: design.spacing.md,
+      overflowY: 'auto',
+      position: 'fixed',
+      right: 0,
+      top: 0,
+      zIndex: 1000,
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.md, height: '100%' }}>
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          paddingBottom: design.spacing.sm,
+          borderBottom: `1px solid ${design.colors.borderPrimary}`
+        }}>
+          <h3 style={{ 
+            ...design.text('heading'),
+            color: design.colors.textPrimary,
+            margin: 0
+          }}>
             Node Properties
           </h3>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
+            style={{
+              padding: design.spacing.xs,
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: design.spacing.xs,
+              cursor: 'pointer',
+              color: design.colors.textMuted,
+              transition: 'all 0.2s ease-in-out',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = design.colors.bgTertiary
+              e.currentTarget.style.color = design.colors.textPrimary
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.color = design.colors.textMuted
+            }}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Node Info */}
-        <Card className="p-3">
-          <div className="text-sm text-gray-600">
-            <div className="font-medium">{selectedNode.data?.label}</div>
-            <div className="text-xs text-gray-500">
+        <CoronaCard style={{ padding: design.spacing.sm }}>
+          <div style={{ 
+            ...design.text('body'),
+            color: design.colors.textSecondary
+          }}>
+            <div style={{ 
+              fontWeight: design.typography.weights.semibold,
+              color: design.colors.textPrimary,
+              marginBottom: design.spacing.xs
+            }}>
+              {selectedNode.data?.label || 'Unnamed Node'}
+            </div>
+            <div style={{ 
+              ...design.text('caption'),
+              color: design.colors.textMuted
+            }}>
               Type: {selectedNode.type}
             </div>
           </div>
-        </Card>
+        </CoronaCard>
 
         {/* Configuration Form */}
-        <div className="space-y-4">
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: design.spacing.md,
+          flex: 1,
+          overflowY: 'auto'
+        }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label style={{ 
+              ...design.text('body'),
+              color: design.colors.textPrimary,
+              marginBottom: design.spacing.xs,
+              display: 'block'
+            }}>
               Label
             </label>
             <input
               type="text"
               value={formData.label || ''}
               onChange={(e) => handleInputChange('label', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                width: '100%',
+                padding: `${design.spacing.sm} ${design.spacing.md}`,
+                backgroundColor: design.colors.bgTertiary,
+                border: `1px solid ${design.colors.borderPrimary}`,
+                borderRadius: design.spacing.sm,
+                color: design.colors.textPrimary,
+                fontSize: design.typography.sizes.sm,
+                outline: 'none',
+                transition: 'all 0.2s ease-in-out',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = design.colors.primary
+                e.target.style.boxShadow = `0 0 0 2px ${design.colors.primary}20`
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = design.colors.borderPrimary
+                e.target.style.boxShadow = 'none'
+              }}
             />
           </div>
 
@@ -297,25 +422,31 @@ export const NodePropertiesPanel: React.FC<NodePropertiesPanelProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-4 border-t border-gray-200">
-          <Button
+        <div style={{ 
+          display: 'flex', 
+          gap: design.spacing.sm, 
+          paddingTop: design.spacing.md, 
+          borderTop: `1px solid ${design.colors.borderPrimary}`,
+          marginTop: 'auto'
+        }}>
+          <CoronaButton
             variant="primary"
             size="sm"
             onClick={handleSave}
             disabled={!isDirty}
-            className="flex-1"
+            style={{ flex: 1 }}
           >
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="w-4 h-4" style={{ marginRight: design.spacing.xs }} />
             Save
-          </Button>
-          <Button
+          </CoronaButton>
+          <CoronaButton
             variant="secondary"
             size="sm"
             onClick={handleReset}
             disabled={!isDirty}
           >
             <RefreshCw className="w-4 h-4" />
-          </Button>
+          </CoronaButton>
         </div>
       </div>
     </div>

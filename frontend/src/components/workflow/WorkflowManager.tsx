@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Plus, FolderOpen, Save, Trash2, Copy, Download, Upload, AlertCircle } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { Card } from '../ui/Card'
+import { CoronaButton } from '../ui/CoronaButton'
+import { CoronaCard } from '../ui/CoronaCard'
 import { Input } from '../ui/Input'
 import { useWorkflowStore } from '../../stores/workflowStore'
 
@@ -87,14 +87,14 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
   )
 
   return (
-    <div className="w-96 bg-white border-r border-gray-300 p-4 overflow-y-auto">
+    <div className="w-96 p-4 overflow-y-auto" style={{ backgroundColor: '#1a1a2e', borderRight: '1px solid rgba(255, 255, 255, 0.1)' }}>
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Workflows</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <h2 className="text-lg font-semibold" style={{ color: '#ffffff' }}>Workflows</h2>
+          <CoronaButton variant="ghost" size="sm" onClick={onClose}>
             ×
-          </Button>
+          </CoronaButton>
         </div>
 
         {/* Search */}
@@ -110,7 +110,7 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button
+          <CoronaButton
             variant="primary"
             size="sm"
             onClick={() => setShowCreateForm(true)}
@@ -118,27 +118,27 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
           >
             <Plus className="w-4 h-4 mr-2" />
             New
-          </Button>
-          <Button
+          </CoronaButton>
+          <CoronaButton
             variant="secondary"
             size="sm"
             onClick={() => setShowImportDialog(true)}
           >
             <Upload className="w-4 h-4" />
-          </Button>
-          <Button
+          </CoronaButton>
+          <CoronaButton
             variant="secondary"
             size="sm"
             onClick={handleExportWorkflow}
             disabled={!currentWorkflow}
           >
             <Download className="w-4 h-4" />
-          </Button>
+          </CoronaButton>
         </div>
 
         {/* Create Workflow Form */}
         {showCreateForm && (
-          <Card className="p-4">
+          <CoronaCard className="p-4">
             <h3 className="font-medium text-gray-900 mb-3">Create New Workflow</h3>
             <div className="space-y-3">
               <Input
@@ -154,29 +154,29 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
                 rows={3}
               />
               <div className="flex gap-2">
-                <Button
+                <CoronaButton
                   variant="primary"
                   size="sm"
                   onClick={handleCreateWorkflow}
                   disabled={!newWorkflowName.trim()}
                 >
                   Create
-                </Button>
-                <Button
+                </CoronaButton>
+                <CoronaButton
                   variant="secondary"
                   size="sm"
                   onClick={() => setShowCreateForm(false)}
                 >
                   Cancel
-                </Button>
+                </CoronaButton>
               </div>
             </div>
-          </Card>
+          </CoronaCard>
         )}
 
         {/* Import Dialog */}
         {showImportDialog && (
-          <Card className="p-4">
+          <CoronaCard className="p-4">
             <h3 className="font-medium text-gray-900 mb-3">Import Workflow</h3>
             <div className="space-y-3">
               <textarea
@@ -187,24 +187,24 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
                 rows={6}
               />
               <div className="flex gap-2">
-                <Button
+                <CoronaButton
                   variant="primary"
                   size="sm"
                   onClick={handleImportWorkflow}
                   disabled={!importData.trim()}
                 >
                   Import
-                </Button>
-                <Button
+                </CoronaButton>
+                <CoronaButton
                   variant="secondary"
                   size="sm"
                   onClick={() => setShowImportDialog(false)}
                 >
                   Cancel
-                </Button>
+                </CoronaButton>
               </div>
             </div>
-          </Card>
+          </CoronaCard>
         )}
 
         {/* Workflow List */}
@@ -215,7 +215,7 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
             </div>
           ) : (
             filteredWorkflows.map((workflow) => (
-              <Card
+              <CoronaCard
                 key={workflow.id}
                 className={`p-3 cursor-pointer transition-colors ${
                   currentWorkflow?.id === workflow.id
@@ -246,7 +246,7 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-1 ml-2">
-                    <Button
+                    <CoronaButton
                       variant="ghost"
                       size="sm"
                       onClick={(e) => {
@@ -256,8 +256,8 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
                       className="p-1"
                     >
                       <Copy className="w-3 h-3" />
-                    </Button>
-                    <Button
+                    </CoronaButton>
+                    <CoronaButton
                       variant="ghost"
                       size="sm"
                       onClick={(e) => {
@@ -267,10 +267,10 @@ export const WorkflowManager: React.FC<WorkflowManagerProps> = ({
                       className="p-1 text-red-500 hover:text-red-700"
                     >
                       <Trash2 className="w-3 h-3" />
-                    </Button>
+                    </CoronaButton>
                   </div>
                 </div>
-              </Card>
+              </CoronaCard>
             ))
           )}
         </div>

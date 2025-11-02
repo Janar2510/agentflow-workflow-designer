@@ -2,8 +2,8 @@ import React from 'react'
 import { Menu, Bell, Settings, User, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useWorkflowStore } from '../../stores/workflowStore'
-import { Button } from '../ui/Button'
-import { Badge } from '../ui/Badge'
+import { CoronaButton } from '../ui/CoronaButton'
+import { CoronaBadge } from '../ui/CoronaBadge'
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth()
@@ -14,14 +14,14 @@ export const Header: React.FC = () => {
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center gap-4">
-          <Button
+          <CoronaButton
             variant="ghost"
             size="sm"
             onClick={toggleSidebar}
             className="p-2"
           >
             <Menu className="h-5 w-5" />
-          </Button>
+          </CoronaButton>
           
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-gradient-primary to-gradient-secondary rounded-lg flex items-center justify-center">
@@ -47,16 +47,16 @@ export const Header: React.FC = () => {
         {/* Right Section */}
         <div className="flex items-center gap-4">
           {/* Notifications */}
-          <Button variant="ghost" size="sm" className="p-2 relative">
+          <CoronaButton variant="ghost" size="sm" className="p-2 relative">
             <Bell className="h-5 w-5" />
-            <Badge 
+            <CoronaBadge 
               variant="danger" 
               size="sm" 
               className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center"
             >
               3
-            </Badge>
-          </Button>
+            </CoronaBadge>
+          </CoronaButton>
 
           {/* User Menu */}
           <div className="flex items-center gap-3">
@@ -70,22 +70,22 @@ export const Header: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="p-2">
+              <CoronaButton variant="ghost" size="sm" className="p-2">
                 <Settings className="h-5 w-5" />
-              </Button>
+              </CoronaButton>
               
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-gradient-secondary rounded-full flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
               
-              <Button 
+              <CoronaButton 
                 variant="ghost" 
                 size="sm" 
                 onClick={logout}
                 className="p-2 text-gray-500 hover:text-red-500"
               >
                 <LogOut className="h-5 w-5" />
-              </Button>
+              </CoronaButton>
             </div>
           </div>
         </div>

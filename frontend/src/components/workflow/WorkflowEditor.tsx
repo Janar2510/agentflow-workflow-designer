@@ -25,6 +25,7 @@ import { useWorkflowStore } from '../../stores/workflowStore'
 import { useWorkflowExecution } from '../../hooks/useWorkflowExecution'
 import { workflowDataToReactFlow, reactFlowToWorkflowData } from '../../utils/workflowAdapters'
 
+// Define nodeTypes outside component to prevent recreation
 const nodeTypes = {
   agentNode: AgentNode,
   conditionNode: ConditionNode,
@@ -63,7 +64,9 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
     validateWorkflow,
     undo,
     redo,
-    setHasUnsavedChanges
+    setHasUnsavedChanges,
+    createWorkflow,
+    clearWorkflow
   } = useWorkflowStore()
 
   const {
@@ -75,19 +78,72 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
     getNodeExecutionData
   } = useWorkflowExecution()
 
+  const handleDeleteNode = useCallback((nodeId: string) => {
+    setNodes((nds) => nds.filter(node => node.id !== nodeId))
+    setEdges((eds) => eds.filter(edge => edge.source !== nodeId && edge.target !== nodeId))
+    setHasUnsavedChanges(true)
+  }, [setNodes, setEdges, setHasUnsavedChanges])
+
+  const handleReplaceNode = useCallback((_nodeId: string) => {
+    // For now, just show properties panel for replacement
+    // In a full implementation, this would open a node selection dialog
+    setShowPropertiesPanel(true)
+  }, [])
+
+  const handleDisconnectNode = useCallback((nodeId: string) => {
+    setEdges((eds) => eds.filter(edge => edge.source !== nodeId && edge.target !== nodeId))
+    setHasUnsavedChanges(true)
+  }, [setEdges, setHasUnsavedChanges])
+
   // Load workflow data when component mounts or workflowId changes
   useEffect(() => {
     if (currentWorkflow) {
+      // Check for corrupted node types and clear if necessary
+      const hasCorruptedNodes = currentWorkflow.workflow_data.nodes.some(node => 
+        node.type.includes('NodeNode') || node.type.length > 20
+      )
+      
+      if (hasCorruptedNodes) {
+        console.log('Detected corrupted node types, clearing workflow data')
+        clearWorkflow()
+        return
+      }
+      
       const reactFlowData = workflowDataToReactFlow(currentWorkflow.workflow_data)
-      setNodes(reactFlowData.nodes)
+      
+      // Ensure all nodes have required properties
+      const nodesWithProps = reactFlowData.nodes.map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          serviceType: node.data.serviceType || 'default',
+          onDelete: () => {
+            setNodes((nds) => nds.filter((n) => n.id !== node.id))
+            setEdges((eds) => eds.filter((edge) => edge.source !== node.id && edge.target !== node.id))
+          },
+          onAdd: () => {
+            console.log('Add connection for node:', node.id)
+          },
+          onSettings: () => {
+            setSelectedNode(node)
+            setShowPropertiesPanel(true)
+          },
+        }
+      }))
+      
+      setNodes(nodesWithProps)
       setEdges(reactFlowData.edges)
       
       // Set viewport if available
       if (reactFlowInstance && reactFlowData.viewport) {
         reactFlowInstance.setViewport(reactFlowData.viewport)
       }
+    } else {
+      // Create a default workflow if none exists
+      console.log('No current workflow, creating default workflow')
+      createWorkflow('Default Workflow', 'A sample workflow to get started')
     }
-  }, [currentWorkflow, setNodes, setEdges, reactFlowInstance])
+  }, [currentWorkflow, setNodes, setEdges, reactFlowInstance, createWorkflow, clearWorkflow])
 
   // Update node statuses based on execution
   useEffect(() => {
@@ -106,16 +162,27 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
                 duration: executionData.duration || 0,
                 timestamp: new Date(executionData.startTime || Date.now()).toISOString(),
                 error: executionData.error
-              } : node.data.lastExecution
+              } : node.data.lastExecution,
+              onDelete: handleDeleteNode,
+              onReplace: handleReplaceNode,
+              onDisconnect: handleDisconnectNode,
+              onAdd: () => {
+                console.log('Add connection for node:', node.id)
+              },
+              onSettings: () => {
+                setSelectedNode(node)
+                setShowPropertiesPanel(true)
+              },
             }
           }
         })
       )
     }
-  }, [currentExecution, getNodeStatus, getNodeExecutionData])
+  }, [currentExecution, getNodeStatus, getNodeExecutionData, handleDeleteNode, handleReplaceNode, handleDisconnectNode])
 
   const onConnect = useCallback(
     (params: Connection) => {
+      console.log('🔗🔗🔗 Connection attempt:', params)
       const newEdge = {
         ...params,
         id: `edge-${Date.now()}`,
@@ -123,9 +190,11 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
         animated: true,
         style: { stroke: '#6366f1' }
       }
+      console.log('🔗🔗🔗 Adding edge:', newEdge)
       setEdges((eds) => addEdge(newEdge, eds))
+      setHasUnsavedChanges(true)
     },
-    [setEdges]
+    [setEdges, setHasUnsavedChanges]
   )
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -162,6 +231,18 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
               condition: 'true',
               config: {},
               label: label || 'Condition',
+              serviceType: 'default',
+              onDelete: () => {
+                setNodes((nds) => nds.filter((node) => node.id !== newNode.id))
+                setEdges((eds) => eds.filter((edge) => edge.source !== newNode.id && edge.target !== newNode.id))
+              },
+              onAdd: () => {
+                console.log('Add connection for node:', newNode.id)
+              },
+              onSettings: () => {
+                setSelectedNode(newNode)
+                setShowPropertiesPanel(true)
+              },
             },
           }
           break
@@ -174,6 +255,18 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
               triggerType: 'manual',
               config: {},
               label: label || 'Trigger',
+              onDelete: () => {
+                setNodes((nds) => nds.filter((node) => node.id !== newNode.id))
+                setEdges((eds) => eds.filter((edge) => edge.source !== newNode.id && edge.target !== newNode.id))
+              },
+              onAdd: () => {
+                // Add new connection or expand node
+                console.log('Add connection for node:', newNode.id)
+              },
+              onSettings: () => {
+                setSelectedNode(newNode)
+                setShowPropertiesPanel(true)
+              },
             },
           }
           break
@@ -186,18 +279,56 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
               actionType: 'notification',
               config: {},
               label: label || 'Action',
+              serviceType: 'default',
+              onDelete: () => {
+                setNodes((nds) => nds.filter((node) => node.id !== newNode.id))
+                setEdges((eds) => eds.filter((edge) => edge.source !== newNode.id && edge.target !== newNode.id))
+              },
+              onAdd: () => {
+                console.log('Add connection for node:', newNode.id)
+              },
+              onSettings: () => {
+                setSelectedNode(newNode)
+                setShowPropertiesPanel(true)
+              },
             },
           }
           break
         default:
+          // Map agent types to service types for better visual representation
+          const serviceTypeMap: Record<string, string> = {
+            'llm_text_generator': 'gmail',
+            'llm_chat': 'slack',
+            'llm_summarizer': 'discord',
+            'llm_translator': 'github',
+            'data_processor': 'aws-lambda',
+            'data_analyzer': 'telegram',
+            'data_validator': 'microsoft-outlook',
+            'data_converter': 'airtable',
+            'database_query': 'servicenow',
+            'code_analyzer': 'pagerduty',
+            'email_sender': 'gmail',
+            'email_action': 'gmail',
+            'file_handler': 'rabbitmq',
+            'api_caller': 'http-request',
+            'webhook_handler': 'thehive',
+            'webhook_action': 'http-request',
+            'notification_action': 'slack',
+            'database_action': 'servicenow'
+          }
+          
           newNode = {
             id: `agent-${Date.now()}`,
             type: 'agentNode',
             position,
             data: {
               agentType,
+              serviceType: serviceTypeMap[agentType] || 'default',
               config: {},
               label: label || agentType.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+              onDelete: handleDeleteNode,
+              onReplace: handleReplaceNode,
+              onDisconnect: handleDisconnectNode,
             },
           }
       }
@@ -327,6 +458,100 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
     cancelExecution()
   }, [cancelExecution])
 
+  const handleClearWorkflow = useCallback(() => {
+    if (confirm('Are you sure you want to clear the workflow? This will remove all nodes and connections.')) {
+      // Force clear everything
+      localStorage.clear()
+      sessionStorage.clear()
+      
+      // Clear all state immediately
+      clearWorkflow()
+      setNodes([])
+      setEdges([])
+      setSelectedNodes([])
+      setSelectedNode(null)
+      setShowPropertiesPanel(false)
+      
+      // Force page reload to completely reset everything
+      window.location.reload()
+    }
+  }, [clearWorkflow, setNodes, setEdges, setSelectedNodes])
+
+  const handleEmergencyReset = useCallback(() => {
+    // Create clean nodes directly without going through the corrupted workflow system
+    const cleanNodes = [
+      {
+        id: 'trigger-1',
+        type: 'triggerNode',
+        position: { x: 100, y: 100 },
+        data: {
+          agentType: 'manual_trigger',
+          serviceType: 'default',
+          config: {},
+          label: 'Text Generator',
+          status: 'idle',
+          onDelete: () => {
+            setNodes((nds) => nds.filter((n) => n.id !== 'trigger-1'))
+            setEdges((eds) => eds.filter((edge) => edge.source !== 'trigger-1' && edge.target !== 'trigger-1'))
+          },
+          onAdd: () => console.log('Add connection for trigger-1'),
+          onSettings: () => {
+            setSelectedNode({ id: 'trigger-1', type: 'triggerNode', data: { label: 'Text Generator' } })
+            setShowPropertiesPanel(true)
+          },
+        }
+      },
+      {
+        id: 'agent-1',
+        type: 'agentNode',
+        position: { x: 400, y: 100 },
+        data: {
+          agentType: 'llm_chat',
+          serviceType: 'slack',
+          config: {},
+          label: 'Chat Agent',
+          status: 'idle',
+          onDelete: () => {
+            setNodes((nds) => nds.filter((n) => n.id !== 'agent-1'))
+            setEdges((eds) => eds.filter((edge) => edge.source !== 'agent-1' && edge.target !== 'agent-1'))
+          },
+          onAdd: () => console.log('Add connection for agent-1'),
+          onSettings: () => {
+            setSelectedNode({ id: 'agent-1', type: 'agentNode', data: { label: 'Chat Agent' } })
+            setShowPropertiesPanel(true)
+          },
+        }
+      },
+      {
+        id: 'action-1',
+        type: 'actionNode',
+        position: { x: 700, y: 100 },
+        data: {
+          agentType: 'email_sender',
+          serviceType: 'gmail',
+          config: {},
+          label: 'Email Sender',
+          status: 'idle',
+          onDelete: () => {
+            setNodes((nds) => nds.filter((n) => n.id !== 'action-1'))
+            setEdges((eds) => eds.filter((edge) => edge.source !== 'action-1' && edge.target !== 'action-1'))
+          },
+          onAdd: () => console.log('Add connection for action-1'),
+          onSettings: () => {
+            setSelectedNode({ id: 'action-1', type: 'actionNode', data: { label: 'Email Sender' } })
+            setShowPropertiesPanel(true)
+          },
+        }
+      }
+    ]
+    
+    setNodes(cleanNodes)
+    setEdges([])
+    setSelectedNodes([])
+    setSelectedNode(null)
+    setShowPropertiesPanel(false)
+  }, [setNodes, setEdges, setSelectedNodes])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -375,6 +600,8 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
           onRun={handleRun}
           onStop={handleStop}
           onOpenWorkflowManager={() => setShowWorkflowManager(true)}
+          onClearWorkflow={handleClearWorkflow}
+          onEmergencyReset={handleEmergencyReset}
           isReadOnly={isReadOnly}
           selectedNodes={selectedNodes}
           isExecuting={isExecuting}
@@ -400,7 +627,12 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
               defaultEdgeOptions={{
                 type: 'default',
                 animated: true,
-                style: { stroke: '#6366f1', strokeWidth: 2 }
+                style: { 
+                  stroke: '#007AFF', 
+                  strokeWidth: 2,
+                  strokeDasharray: '5,5',
+                  animation: 'dash 1s linear infinite'
+                }
               }}
             >
               <Controls 
@@ -428,15 +660,19 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({
                 }}
               />
               <Background 
-                gap={12} 
+                gap={20} 
                 size={1} 
-                color="var(--border-primary)"
+                color="rgba(255, 255, 255, 0.1)"
+                style={{ backgroundColor: '#0f0f1c' }}
               />
             </ReactFlow>
           </div>
           
           {(showPropertiesPanel || showExecutionLogs) && (
-            <div className="w-80 bg-white border-l border-gray-300 p-4 overflow-y-auto">
+            <div className="w-80 p-4 overflow-y-auto" style={{ 
+              backgroundColor: '#1a1a2e', 
+              borderLeft: '1px solid rgba(255, 255, 255, 0.1)' 
+            }}>
               {selectedNode ? (
                 <NodePropertiesPanel
                   selectedNode={selectedNode}

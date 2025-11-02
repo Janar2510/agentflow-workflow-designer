@@ -1,5 +1,579 @@
 ---
-description:
+description:#  Rules for AgentFlow Project
+
+## 🎯 Project Overview
+AgentFlow is a visual multi-agent workflow designer platform where developers can drag-and-drop to create, deploy, and monitor AI agent workflows without writing orchestration code. Think "GitHub Actions meets LangGraph" with a visual interface.
+
+## 📋 Core Development Rules
+
+### 1. **Code Architecture Standards**
+
+#### Frontend (React + TypeScript)
+```typescript
+// Always use strict TypeScript with proper interfaces
+interface WorkflowNode {
+  id: string;
+  type: 'agent' | 'condition' | 'trigger';
+  position: { x: number; y: number };
+  data: {
+    agentType: string;
+    config: Record<string, any>;
+    label: string;
+  };
+}
+
+// Component naming convention: PascalCase with descriptive names
+export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({ ... }) => {
+  // Always use proper error boundaries
+  // Always implement loading states
+  // Always handle edge cases
+};
+```
+
+#### Backend (Python + FastAPI)
+```python
+# Always use async/await for I/O operations
+@router.post("/workflows", response_model=WorkflowResponse)
+async def create_workflow(
+    workflow_data: WorkflowCreate,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    # Always validate inputs
+    # Always implement proper error handling
+    # Always use dependency injection
+    # Always return structured responses
+```
+
+### 2. **Database Design Rules**
+
+#### Supabase Schema Standards
+```sql
+-- Always use UUID primary keys
+CREATE TABLE workflows (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  -- Always include user_id for RLS
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  -- Always include timestamps
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  -- Always use JSONB for complex data
+  workflow_data JSONB NOT NULL,
+  -- Always add proper indexes
+  -- Always enable RLS
+);
+
+-- Always create performance indexes
+CREATE INDEX idx_workflows_user_id ON workflows(user_id);
+CREATE INDEX idx_workflows_status ON workflows(status);
+
+-- Always implement RLS policies
+ALTER TABLE workflows ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own workflows" ON workflows
+  FOR SELECT USING (user_id = auth.uid());
+```
+
+### 3. **Agent Development Rules**
+
+#### Agent Interface Contract
+```python
+class AgentInterface:
+    """All agents MUST implement this interface"""
+    
+    def __init__(self, config: Dict[str, Any], llm=None):
+        self.config = config
+        self.llm = llm
+        # MUST validate config on initialization
+        self._validate_config()
+    
+    async def execute(self, input_data: Dict[str, Any], context: Any) -> Dict[str, Any]:
+        """
+        MUST return structured response:
+        {
+            'output': Any,  # Primary result
+            'variables': Dict[str, Any],  # Variables for next agents
+            'metadata': Dict[str, Any]  # Execution metadata
+        }
+        """
+        # MUST implement timeout handling
+        # MUST implement error recovery
+        # MUST log execution steps
+        # MUST validate inputs
+        pass
+    
+    def _validate_config(self):
+        """MUST validate configuration schema"""
+        pass
+```
+
+#### Agent Registry Rules
+- **MUST** include comprehensive schema definitions
+- **MUST** implement version compatibility
+- **MUST** include usage examples
+- **MUST** follow semantic versioning
+- **MUST** include security validation
+
+### 4. **Real-time Communication Rules**
+
+#### WebSocket Implementation
+```python
+class ConnectionManager:
+    """MUST handle connection lifecycle properly"""
+    
+    async def connect(self, websocket: WebSocket, workflow_id: str):
+        # MUST validate authentication
+        # MUST track connection state
+        # MUST handle reconnection logic
+        pass
+    
+    async def broadcast_to_workflow(self, workflow_id: str, message: Dict):
+        # MUST handle disconnected clients gracefully
+        # MUST implement message queuing for offline users
+        # MUST validate message format
+        pass
+```
+
+### 5. **Security Rules**
+
+#### Authentication & Authorization
+```python
+# MUST implement proper JWT validation
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    # MUST validate token signature
+    # MUST check token expiration
+    # MUST handle refresh tokens
+    # MUST implement rate limiting
+    pass
+
+# MUST implement RLS at database level
+# MUST sanitize all user inputs
+# MUST validate file uploads
+# MUST implement CORS properly
+```
+
+#### Input Validation
+```typescript
+// Frontend validation
+const workflowSchema = z.object({
+  name: z.string().min(1).max(100),
+  description: z.string().max(500).optional(),
+  nodes: z.array(nodeSchema),
+  edges: z.array(edgeSchema)
+});
+
+// MUST validate on both frontend and backend
+// MUST sanitize HTML content
+// MUST prevent XSS attacks
+// MUST validate file types and sizes
+```
+
+### 6. **Error Handling Rules**
+
+#### Frontend Error Boundaries
+```typescript
+class WorkflowErrorBoundary extends React.Component {
+  // MUST catch and display user-friendly errors
+  // MUST log errors for debugging
+  // MUST provide recovery actions
+  // MUST not crash the entire application
+}
+
+// MUST implement try-catch for async operations
+const handleWorkflowSave = async () => {
+  try {
+    await saveWorkflow(workflowData);
+    toast.success('Workflow saved successfully');
+  } catch (error) {
+    logger.error('Failed to save workflow', error);
+    toast.error('Failed to save workflow. Please try again.');
+  }
+};
+```
+
+#### Backend Error Responses
+```python
+# MUST return structured error responses
+class APIError(Exception):
+    def __init__(self, message: str, code: str, status_code: int = 400):
+        self.message = message
+        self.code = code
+        self.status_code = status_code
+
+# MUST implement global exception handler
+@app.exception_handler(APIError)
+async def api_error_handler(request: Request, exc: APIError):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": {
+                "message": exc.message,
+                "code": exc.code,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        }
+    )
+```
+
+### 7. **Performance Rules**
+
+#### Frontend Optimization
+```typescript
+// MUST use React.memo for expensive components
+const WorkflowNode = React.memo<WorkflowNodeProps>(({ node, onUpdate }) => {
+  // MUST use useCallback for event handlers
+  const handleConfigUpdate = useCallback((config) => {
+    onUpdate(node.id, config);
+  }, [node.id, onUpdate]);
+  
+  // MUST use useMemo for expensive calculations
+  const nodeMetrics = useMemo(() => {
+    return calculateNodeMetrics(node.data);
+  }, [node.data]);
+});
+
+// MUST implement virtualization for large lists
+// MUST use code splitting for routes
+// MUST optimize bundle size
+// MUST implement proper caching
+```
+
+#### Backend Optimization
+```python
+# MUST use connection pooling
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_size=20,
+    max_overflow=30,
+    pool_pre_ping=True
+)
+
+# MUST implement caching for expensive operations
+@lru_cache(maxsize=1000)
+async def get_agent_schema(agent_id: str):
+    # Expensive operation
+    pass
+
+# MUST use background tasks for long operations
+@router.post("/workflows/{workflow_id}/execute")
+async def execute_workflow(workflow_id: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(run_workflow_execution, workflow_id)
+    return {"status": "queued"}
+```
+
+### 8. **Testing Rules**
+
+#### Frontend Testing
+```typescript
+// MUST test all user interactions
+describe('WorkflowEditor', () => {
+  it('should create new node on drag and drop', async () => {
+    render(<WorkflowEditor />);
+    
+    // MUST use proper test utilities
+    const agentItem = screen.getByTestId('agent-llm-generator');
+    const dropZone = screen.getByTestId('workflow-canvas');
+    
+    // MUST test drag and drop functionality
+    fireEvent.dragStart(agentItem);
+    fireEvent.drop(dropZone);
+    
+    await waitFor(() => {
+      expect(screen.getByText('LLM Generator')).toBeInTheDocument();
+    });
+  });
+  
+  // MUST test error states
+  // MUST test loading states
+  // MUST test edge cases
+});
+```
+
+#### Backend Testing
+```python
+# MUST test all API endpoints
+def test_create_workflow(client: TestClient, auth_headers):
+    workflow_data = {
+        "name": "Test Workflow",
+        "description": "Test description",
+        "workflow_data": {"nodes": [], "edges": []}
+    }
+    
+    response = client.post(
+        "/api/workflows",
+        json=workflow_data,
+        headers=auth_headers
+    )
+    
+    assert response.status_code == 201
+    assert response.json()["name"] == "Test Workflow"
+
+# MUST test error conditions
+# MUST test authentication
+# MUST test database transactions
+# MUST mock external dependencies
+```
+
+### 9. **Documentation Rules**
+
+#### Code Documentation
+```python
+class WorkflowExecutionEngine:
+    """
+    Core execution engine for AgentFlow workflows.
+    
+    This class manages the execution of multi-agent workflows,
+    including state management, error handling, and progress tracking.
+    
+    Example:
+        engine = WorkflowExecutionEngine()
+        result = await engine.execute_workflow(workflow_id, input_data)
+    
+    Attributes:
+        running_executions: Dict of currently running executions
+        agent_runner: Service for executing individual agents
+    """
+    
+    async def execute_workflow(
+        self, 
+        workflow_id: str, 
+        input_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Execute a complete workflow.
+        
+        Args:
+            workflow_id: Unique identifier for the workflow
+            input_data: Initial input data for the workflow
+            
+        Returns:
+            Dict containing execution results and metadata
+            
+        Raises:
+            WorkflowNotFoundError: If workflow doesn't exist
+            ExecutionError: If workflow execution fails
+        """
+```
+
+#### API Documentation
+```python
+# MUST include comprehensive OpenAPI docs
+@router.post(
+    "/workflows",
+    response_model=WorkflowResponse,
+    summary="Create a new workflow",
+    description="Create a new workflow with the provided configuration",
+    responses={
+        201: {"description": "Workflow created successfully"},
+        400: {"description": "Invalid workflow data"},
+        401: {"description": "Authentication required"}
+    }
+)
+```
+
+### 10. **Monitoring & Logging Rules**
+
+#### Structured Logging
+```python
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+# MUST use structured logging
+await logger.info(
+    "workflow_execution_started",
+    workflow_id=workflow_id,
+    user_id=user_id,
+    node_count=len(nodes),
+    execution_id=execution_id
+)
+
+# MUST log errors with context
+await logger.error(
+    "agent_execution_failed",
+    agent_id=agent_id,
+    error=str(error),
+    input_data=sanitized_input,
+    execution_id=execution_id
+)
+```
+
+#### Metrics Collection
+```python
+from prometheus_client import Counter, Histogram
+
+# MUST track key metrics
+workflow_executions = Counter(
+    'agentflow_workflow_executions_total',
+    'Total workflow executions',
+    ['status', 'workflow_type']
+)
+
+agent_duration = Histogram(
+    'agentflow_agent_duration_seconds',
+    'Agent execution duration',
+    ['agent_type']
+)
+```
+
+## 🔧 Development Workflow Rules
+
+### 11. **Git Workflow**
+
+```bash
+# MUST use conventional commits
+git commit -m "feat(workflow): add real-time collaboration"
+git commit -m "fix(agent): handle timeout errors properly"
+git commit -m "docs(api): update workflow execution examples"
+
+# MUST create feature branches
+git checkout -b feature/agent-marketplace
+git checkout -b fix/websocket-reconnection
+git checkout -b docs/deployment-guide
+```
+
+### 12. **Code Review Rules**
+
+#### Pull Request Requirements
+- **MUST** include comprehensive description
+- **MUST** include test coverage
+- **MUST** update documentation
+- **MUST** pass all CI checks
+- **MUST** have security review for auth changes
+- **MUST** include performance impact assessment
+
+#### Review Checklist
+```markdown
+- [ ] Code follows established patterns
+- [ ] Proper error handling implemented
+- [ ] Tests cover edge cases
+- [ ] Security implications considered
+- [ ] Performance impact assessed
+- [ ] Documentation updated
+- [ ] Breaking changes documented
+```
+
+### 13. **Deployment Rules**
+
+#### Environment Configuration
+```yaml
+# MUST use environment-specific configs
+environments:
+  development:
+    database_url: "postgresql://localhost/agentflow_dev"
+    redis_url: "redis://localhost:6379"
+    debug: true
+    
+  production:
+    database_url: "${DATABASE_URL}"
+    redis_url: "${REDIS_URL}"
+    debug: false
+    monitoring_enabled: true
+```
+
+#### Health Checks
+```python
+# MUST implement comprehensive health checks
+@app.get("/health")
+async def health_check():
+    health_status = {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "1.0.0",
+        "checks": {}
+    }
+    
+    # Check database connectivity
+    try:
+        await db.execute("SELECT 1")
+        health_status["checks"]["database"] = "healthy"
+    except Exception as e:
+        health_status["checks"]["database"] = "unhealthy"
+        health_status["status"] = "unhealthy"
+    
+    # Check Redis connectivity
+    # Check external API availability
+    
+    return health_status
+```
+
+### 14. **Security Checklist**
+
+#### Pre-deployment Security Rules
+- **MUST** scan for vulnerabilities
+- **MUST** validate all environment variables
+- **MUST** implement rate limiting
+- **MUST** use HTTPS in production
+- **MUST** validate SSL certificates
+- **MUST** implement CSP headers
+- **MUST** sanitize error messages
+- **MUST** implement audit logging
+
+### 15. **Performance Benchmarks**
+
+#### Required Performance Targets
+```yaml
+performance_targets:
+  api_response_time:
+    p95: 500ms
+    p99: 1000ms
+  
+  workflow_execution:
+    simple_workflow: <2s
+    complex_workflow: <30s
+  
+  ui_responsiveness:
+    time_to_interactive: <3s
+    first_contentful_paint: <1.5s
+  
+  concurrent_users:
+    target: 1000
+    workflow_executions: 100/minute
+```
+
+## 🎯 Quality Gates
+
+### Before Each Commit
+- [ ] All tests pass locally
+- [ ] Code follows style guidelines
+- [ ] No security vulnerabilities
+- [ ] Performance impact assessed
+
+### Before Each Deploy
+- [ ] All CI/CD checks pass
+- [ ] Security scan completed
+- [ ] Database migrations tested
+- [ ] Rollback plan prepared
+- [ ] Monitoring alerts configured
+
+### Before Each Release
+- [ ] End-to-end testing completed
+- [ ] Performance benchmarks met
+- [ ] Documentation updated
+- [ ] Release notes prepared
+- [ ] Security audit completed
+
+## 🚀 Success Metrics
+
+### Technical Metrics
+- **Code Coverage**: >80%
+- **API Response Time**: <500ms (P95)
+- **System Uptime**: >99.9%
+- **Error Rate**: <0.1%
+- **Time to Deploy**: <10 minutes
+
+### User Experience Metrics
+- **Time to First Workflow**: <5 minutes
+- **Workflow Creation Success Rate**: >95%
+- **User Onboarding Completion**: >80%
+- **Feature Adoption Rate**: Track key features
+
+### Business Metrics
+- **GitHub Stars**: Track growth
+- **Community Contributions**: PRs, Issues
+- **Documentation Views**: Usage analytics
+- **Demo Completion Rate**: Portfolio impact
+
+These rules ensure that AgentFlow is built with enterprise-grade quality, security, and performance standards that will impress potential employers and demonstrate professional development practices.
 globs:
 alwaysApply: true
 ---

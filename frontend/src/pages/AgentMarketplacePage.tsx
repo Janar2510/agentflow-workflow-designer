@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Search, Star, Download, Filter, Bot, BarChart3, Link, MessageCircle, Eye, Database } from 'lucide-react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 
 export const AgentMarketplacePage: React.FC = () => {
+  const design = useCoronaDesign()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
@@ -103,8 +105,15 @@ export const AgentMarketplacePage: React.FC = () => {
     }
   }
 
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: design.colors.bgPrimary,
+    padding: design.spacing.lg,
+    fontFamily: design.typography.fontFamily,
+  }
+
   return (
-    <div className="p-6">
+    <div style={pageStyles}>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -115,14 +124,14 @@ export const AgentMarketplacePage: React.FC = () => {
             Discover and integrate powerful AI agents for your workflows.
           </p>
         </div>
-        <AgentFlowButton variant="primary">
+        <CoronaButton variant="primary">
           <Bot className="h-4 w-4 mr-2" />
           Create Agent
-        </AgentFlowButton>
+        </CoronaButton>
       </div>
 
       {/* Search and Filters */}
-      <AgentFlowCard variant="glass" className="mb-8">
+      <CoronaCard variant="elevated" className="mb-8">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
@@ -157,7 +166,7 @@ export const AgentMarketplacePage: React.FC = () => {
             })}
           </div>
         </div>
-      </AgentFlowCard>
+      </CoronaCard>
 
       {/* Built-in Agents */}
       <div className="mb-8">
@@ -170,7 +179,7 @@ export const AgentMarketplacePage: React.FC = () => {
           {filteredAgents.map((agent) => {
             const Icon = agent.icon
             return (
-              <AgentFlowCard key={agent.id} variant="glass" className="group hover:scale-105 transition-transform relative overflow-hidden">
+              <CoronaCard key={agent.id} variant="elevated" className="group hover:scale-105 transition-transform relative overflow-hidden">
                 {/* Black Preview Card - 2px smaller than whole card */}
                 <div className="mb-4">
                   <div className="bg-black rounded-lg mx-auto flex items-center justify-center shadow-lg" style={{ width: 'calc(100% - 4px)', height: '80px', margin: '2px' }}>
@@ -194,9 +203,9 @@ export const AgentMarketplacePage: React.FC = () => {
                             <Star className="h-4 w-4 text-yellow-400 fill-current" />
                             <span className="text-sm text-gray-400">{agent.rating}</span>
                           </div>
-                          <AgentFlowBadge variant={getCategoryColor(agent.category)}>
+                          <CoronaBadge variant={getCategoryColor(agent.category)}>
                             {agent.category}
-                          </AgentFlowBadge>
+                          </CoronaBadge>
                         </div>
                       </div>
                     </div>
@@ -225,9 +234,9 @@ export const AgentMarketplacePage: React.FC = () => {
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-2">
-                    <AgentFlowButton variant="primary" className="flex-1">
+                    <CoronaButton variant="primary" className="flex-1">
                       Use Agent
-                    </AgentFlowButton>
+                    </CoronaButton>
                     <div className="flex items-center gap-4 text-sm text-gray-400 ml-4">
                       <div className="flex items-center gap-1">
                         <Download className="h-4 w-4" />
@@ -236,7 +245,7 @@ export const AgentMarketplacePage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </AgentFlowCard>
+              </CoronaCard>
             )
           })}
         </div>
@@ -246,18 +255,18 @@ export const AgentMarketplacePage: React.FC = () => {
       <div>
         <h2 className="text-xl font-semibold text-white mb-6">Community Agents</h2>
         
-        <AgentFlowCard variant="glass" className="text-center py-12">
+        <CoronaCard variant="elevated" className="text-center py-12">
           <div className="space-y-4">
             <Bot className="h-12 w-12 text-gray-400 mx-auto" />
             <h3 className="text-lg font-semibold text-white">No community agents yet</h3>
             <p className="text-gray-400">
               Community agents will appear here when users start sharing their custom agents.
             </p>
-            <AgentFlowButton variant="ghost">
+            <CoronaButton variant="outline-primary">
               Be the first to share an agent
-            </AgentFlowButton>
+            </CoronaButton>
           </div>
-        </AgentFlowCard>
+        </CoronaCard>
       </div>
     </div>
   )

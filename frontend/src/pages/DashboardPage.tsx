@@ -1,37 +1,40 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, TrendingUp, Clock, CheckCircle, AlertCircle, Users, Workflow, Zap, Bot, Settings, BarChart3, FileText, Play, Download, Star } from 'lucide-react'
-import { AgentFlowCard, AgentFlowButton, AgentFlowBadge } from '../components/ui'
+import { CoronaCard, CoronaButton, CoronaBadge } from '../components/ui'
+import { useCoronaDesign } from '../hooks/useCoronaDesign'
 
 const DashboardPage: React.FC = () => {
+  const design = useCoronaDesign()
+  
   const stats = [
     {
       label: 'Total Workflows',
       value: '12',
       change: '+2 this week',
       icon: Workflow,
-      color: '#007AFF'
+      color: design.colors.primary
     },
     {
       label: 'Successful Executions',
       value: '89%',
       change: '+5% from last month',
       icon: CheckCircle,
-      color: '#00FF87'
+      color: design.colors.success
     },
     {
       label: 'Active Agents',
       value: '7',
       change: '+1 this week',
       icon: Users,
-      color: '#8B5CF6'
+      color: design.colors.info
     },
     {
       label: 'Processing Time',
       value: '2.3s',
       change: '-0.5s faster',
       icon: TrendingUp,
-      color: '#FFB800'
+      color: design.colors.warning
     }
   ]
 
@@ -103,197 +106,451 @@ const DashboardPage: React.FC = () => {
     }
   }
 
+  const pageStyles: React.CSSProperties = {
+    minHeight: '100vh',
+    backgroundColor: design.colors.bgPrimary,
+    padding: design.spacing.lg,
+    fontFamily: design.typography.fontFamily,
+  }
+
+  const headerStyles: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: design.spacing.xl,
+  }
+
+  const titleStyles: React.CSSProperties = {
+    ...design.text('heading'),
+    fontSize: design.typography.sizes['3xl'],
+    marginBottom: design.spacing.sm,
+  }
+
+  const subtitleStyles: React.CSSProperties = {
+    ...design.text('body'),
+    fontSize: design.typography.sizes.lg,
+    color: design.colors.textSecondary,
+  }
+
   return (
-    <div className="p-6 min-h-screen" style={{ backgroundColor: 'var(--af-bg-primary)' }}>
+    <div style={pageStyles}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div style={headerStyles}>
         <div>
-          <h1 className="text-4xl font-bold" style={{ color: 'var(--af-text-primary)' }}>
-            Dashboard
-          </h1>
-          <p className="text-lg mt-2" style={{ color: 'var(--af-text-secondary)' }}>
+          <h1 style={titleStyles}>Dashboard</h1>
+          <p style={subtitleStyles}>
             Welcome back! Here's what's happening with your workflows.
           </p>
         </div>
         <Link to="/workflow/new">
-          <AgentFlowButton variant="primary" size="lg">
-            <Plus className="h-5 w-5 mr-2" />
+          <CoronaButton variant="primary" size="lg">
+            <Plus style={{ width: '20px', height: '20px', marginRight: design.spacing.sm }} />
             New Workflow
-          </AgentFlowButton>
+          </CoronaButton>
         </Link>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: design.spacing.lg,
+        marginBottom: design.spacing.xl,
+      }}>
         {stats.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <AgentFlowCard
-              key={index}
-              variant="glass"
-              className="af-card--gradient-border af-fade-in group hover:scale-105 transition-all duration-300"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: `${stat.color}20` }}>
+            <CoronaCard key={index} variant="elevated">
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  margin: `0 auto ${design.spacing.md} auto`,
+                  borderRadius: '50%',
+                  backgroundColor: `${stat.color}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                   <Icon 
-                    className="h-8 w-8" 
-                    style={{ color: stat.color }}
+                    style={{ 
+                      width: '30px', 
+                      height: '30px', 
+                      color: stat.color 
+                    }}
                   />
                 </div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--af-text-secondary)' }}>
+                <p style={{
+                  ...design.text('caption'),
+                  marginBottom: design.spacing.sm,
+                }}>
                   {stat.label}
                 </p>
-                <p className="text-3xl font-bold mb-2" style={{ color: 'var(--af-text-primary)' }}>
+                <p style={{
+                  ...design.text('heading'),
+                  fontSize: design.typography.sizes['2xl'],
+                  marginBottom: design.spacing.sm,
+                }}>
                   {stat.value}
                 </p>
-                <AgentFlowBadge variant="success" size="sm">
+                <CoronaBadge variant="success" size="sm">
                   {stat.change}
-                </AgentFlowBadge>
+                </CoronaBadge>
               </div>
-            </AgentFlowCard>
+            </CoronaCard>
           )
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: design.spacing.lg,
+        marginBottom: design.spacing.xl,
+      }}>
         {/* Recent Workflows */}
-        <AgentFlowCard variant="glass" className="af-card--gradient-border">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Recent Workflows</h3>
-            <Link to="/dashboard" className="text-sm hover:underline" style={{ color: 'var(--af-accent-primary)' }}>
+        <CoronaCard variant="elevated">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: design.spacing.md,
+          }}>
+            <h3 style={{
+              ...design.text('heading'),
+              fontSize: design.typography.sizes.xl,
+            }}>Recent Workflows</h3>
+            <Link to="/dashboard" style={{
+              ...design.text('caption'),
+              color: design.colors.primary,
+              textDecoration: 'none',
+            }}>
               View all
             </Link>
           </div>
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
             {recentWorkflows.map((workflow) => (
               <div
                 key={workflow.id}
-                className="flex items-center justify-between p-4 rounded-lg hover:scale-105 transition-all duration-200 group"
-                style={{ backgroundColor: 'var(--af-bg-tertiary)' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: design.spacing.sm,
+                  borderRadius: '0.375rem',
+                  backgroundColor: design.colors.bgSecondary,
+                  border: `1px solid ${design.colors.borderPrimary}`,
+                }}
               >
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: design.spacing.sm }}>
                   {getStatusIcon(workflow.status)}
                   <div>
-                    <h4 className="font-medium" style={{ color: 'var(--af-text-primary)' }}>
+                    <h4 style={{
+                      ...design.text('label'),
+                      fontSize: design.typography.sizes.sm,
+                    }}>
                       {workflow.name}
                     </h4>
-                    <p className="text-sm" style={{ color: 'var(--af-text-secondary)' }}>
+                    <p style={{
+                      ...design.text('caption'),
+                      fontSize: design.typography.sizes.xs,
+                    }}>
                       {workflow.executions} executions • {workflow.successRate}% success
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs" style={{ color: 'var(--af-text-muted)' }}>{workflow.lastRun}</p>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{
+                    ...design.text('caption'),
+                    fontSize: design.typography.sizes.xs,
+                  }}>{workflow.lastRun}</p>
                 </div>
               </div>
             ))}
           </div>
-        </AgentFlowCard>
+        </CoronaCard>
 
         {/* Recent Executions */}
-        <AgentFlowCard variant="glass" className="af-card--gradient-border">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Recent Executions</h3>
-            <Link to="/executions" className="text-sm hover:underline" style={{ color: 'var(--af-accent-primary)' }}>
+        <CoronaCard variant="elevated">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: design.spacing.md,
+          }}>
+            <h3 style={{
+              ...design.text('heading'),
+              fontSize: design.typography.sizes.xl,
+            }}>Recent Executions</h3>
+            <Link to="/executions" style={{
+              ...design.text('caption'),
+              color: design.colors.primary,
+              textDecoration: 'none',
+            }}>
               View all
             </Link>
           </div>
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: design.spacing.sm }}>
             {recentExecutions.map((execution) => (
               <div
                 key={execution.id}
-                className="flex items-center justify-between p-4 rounded-lg hover:scale-105 transition-all duration-200 group"
-                style={{ backgroundColor: 'var(--af-bg-tertiary)' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: design.spacing.sm,
+                  borderRadius: '0.375rem',
+                  backgroundColor: design.colors.bgSecondary,
+                  border: `1px solid ${design.colors.borderPrimary}`,
+                }}
               >
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: design.spacing.sm }}>
                   {getStatusIcon(execution.status)}
                   <div>
-                    <h4 className="font-medium" style={{ color: 'var(--af-text-primary)' }}>
+                    <h4 style={{
+                      ...design.text('label'),
+                      fontSize: design.typography.sizes.sm,
+                    }}>
                       {execution.workflow}
                     </h4>
-                    <p className="text-sm" style={{ color: 'var(--af-text-secondary)' }}>
+                    <p style={{
+                      ...design.text('caption'),
+                      fontSize: design.typography.sizes.xs,
+                    }}>
                       Duration: {execution.duration}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs" style={{ color: 'var(--af-text-muted)' }}>{execution.timestamp}</p>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{
+                    ...design.text('caption'),
+                    fontSize: design.typography.sizes.xs,
+                  }}>{execution.timestamp}</p>
                 </div>
               </div>
             ))}
           </div>
-        </AgentFlowCard>
+        </CoronaCard>
       </div>
 
       {/* Quick Actions */}
-      <AgentFlowCard variant="glass" className="af-card--gradient-border">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-2xl font-semibold" style={{ color: 'var(--af-text-primary)' }}>Quick Actions</h3>
-          <AgentFlowBadge variant="primary" size="lg">6 Actions</AgentFlowBadge>
+      <CoronaCard variant="elevated">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: design.spacing.lg,
+        }}>
+          <h3 style={{
+            ...design.text('heading'),
+            fontSize: design.typography.sizes.xl,
+          }}>Quick Actions</h3>
+          <CoronaBadge variant="primary" size="md">6 Actions</CoronaBadge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-          <Link to="/workflow/new" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-primary)20' }}>
-                <Plus className="h-7 w-7" style={{ color: 'var(--af-accent-primary)' }} />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: design.spacing.md,
+        }}>
+          <Link to="/workflow/new" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.primary}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <Plus style={{ width: '24px', height: '24px', color: design.colors.primary }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Create Workflow</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Start from scratch</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Create Workflow</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>Start from scratch</p>
+            </CoronaCard>
           </Link>
           
-          <Link to="/templates" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-success)20' }}>
-                <Zap className="h-7 w-7" style={{ color: 'var(--af-accent-success)' }} />
+          <Link to="/templates" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.success}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <Zap style={{ width: '24px', height: '24px', color: design.colors.success }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Use Template</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Browse templates</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Use Template</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>Browse templates</p>
+            </CoronaCard>
           </Link>
           
-          <Link to="/agents" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-purple)20' }}>
-                <Users className="h-7 w-7" style={{ color: 'var(--af-accent-purple)' }} />
+          <Link to="/agents" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.info}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <Users style={{ width: '24px', height: '24px', color: design.colors.info }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Browse Agents</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Find new agents</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Browse Agents</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>Find new agents</p>
+            </CoronaCard>
           </Link>
 
-          <Link to="/workflow" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-warning)20' }}>
-                <Play className="h-7 w-7" style={{ color: 'var(--af-accent-warning)' }} />
+          <Link to="/workflow" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.warning}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <Play style={{ width: '24px', height: '24px', color: design.colors.warning }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Run Workflow</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Execute workflows</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Run Workflow</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>Execute workflows</p>
+            </CoronaCard>
           </Link>
 
-          <Link to="/analytics" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-accent-primary)20' }}>
-                <BarChart3 className="h-7 w-7" style={{ color: 'var(--af-accent-primary)' }} />
+          <Link to="/analytics" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.primary}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <BarChart3 style={{ width: '24px', height: '24px', color: design.colors.primary }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Analytics</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>View insights</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Analytics</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>View insights</p>
+            </CoronaCard>
           </Link>
 
-          <Link to="/settings" className="group">
-            <AgentFlowCard variant="glass" className="h-36 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 group-hover:shadow-lg">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--af-text-muted)20' }}>
-                <Settings className="h-7 w-7" style={{ color: 'var(--af-text-muted)' }} />
+          <Link to="/settings" style={{ textDecoration: 'none' }}>
+            <CoronaCard variant="outlined" style={{
+              height: '120px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: `${design.colors.secondary}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: design.spacing.sm,
+              }}>
+                <Settings style={{ width: '24px', height: '24px', color: design.colors.secondary }} />
               </div>
-              <h3 className="font-semibold text-sm text-center mb-1" style={{ color: 'var(--af-text-primary)' }}>Settings</h3>
-              <p className="text-xs text-center" style={{ color: 'var(--af-text-secondary)' }}>Configure app</p>
-            </AgentFlowCard>
+              <h3 style={{
+                ...design.text('label'),
+                fontSize: design.typography.sizes.sm,
+                marginBottom: design.spacing.xs,
+              }}>Settings</h3>
+              <p style={{
+                ...design.text('caption'),
+                fontSize: design.typography.sizes.xs,
+              }}>Configure app</p>
+            </CoronaCard>
           </Link>
         </div>
-      </AgentFlowCard>
+      </CoronaCard>
     </div>
   )
 }
